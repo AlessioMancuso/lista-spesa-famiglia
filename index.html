@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Lista Spesa — Famiglia</title>
+
+  <!-- Configurazione App Mobile (iPhone & Android) -->
+  <meta name="theme-color" content="#14532D" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Lista Spesa" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="application-name" content="Lista Spesa" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #F6F7F4;
+      color: #1E293B;
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .header-market-banner {
+      background: linear-gradient(135deg, #14532D 0%, #166534 55%, #0F3D21 100%);
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-[#166534] selection:text-white">
+
+  <!-- SCHERMATA 0: LUCCHETTO CODICE DI ACCESSO FAMIGLIA -->
+  <div id="gate-screen" class="min-h-screen flex items-center justify-center p-4 bg-[radial-gradient(ellipse_at_top,_#DCFCE7_0%,_#F6F7F4_65%)]">
+    <div class="bg-white max-w-md w-full rounded-2xl shadow-[0_20px_50px_rgba(20,83,45,0.12)] border border-emerald-900/10 overflow-hidden">
+      <div class="header-market-banner px-6 py-9 text-center text-white">
+        <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-white/15 backdrop-blur-xs border border-white/20 text-3xl mb-3">
+          🛒
+        </div>
+        <p class="text-[10px] font-bold uppercase tracking-[0.24em] text-emerald-200 mb-1">
+          Casa & Supermercato · Tempo Reale
+        </p>
+        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+          Lista della Spesa
+        </h1>
+      </div>
+
+      <form id="family-code-form" class="p-7 space-y-5">
+        <div class="text-center">
+          <h2 class="text-lg font-bold text-stone-900">Inserisci il Codice Famiglia</h2>
+          <p class="text-xs text-stone-500 mt-1">
+            Richiesto solo al primo accesso su questo dispositivo.
+          </p>
+        </div>
+
+        <div>
+          <input
+            type="password"
+            id="family-code-input"
+            inputmode="numeric"
+            pattern="[0-9]*"
+            maxlength="8"
+            placeholder="••••••••"
+            required
+            autocomplete="off"
+            class="w-full px-4 py-3 text-center text-lg tracking-[0.35em] font-bold rounded-xl border border-stone-300 bg-stone-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#166534]/25 focus:border-[#166534] transition"
+          />
+          <p id="family-code-error" class="hidden text-xs text-red-600 font-medium text-center mt-2">
+            Codice non valido. Riprova.
+          </p>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full bg-[#14532D] hover:bg-[#166534] text-white text-sm font-bold py-3.5 rounded-xl shadow-sm transition cursor-pointer"
+        >
+          Apri la Lista Spesa →
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- SCHERMATA 1: APPLICAZIONE PRINCIPALE -->
+  <div id="app-screen" class="hidden min-h-screen flex flex-col">
+
+    <!-- HEADER FISSO -->
+    <header class="header-market-banner text-white shadow-md sticky top-0 z-30">
+      <div class="max-w-3xl mx-auto px-4 py-3.5 flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-white/15 border border-white/20 flex items-center justify-center text-xl shrink-0">
+            🛒
+          </div>
+          <div>
+            <h1 class="text-lg sm:text-xl font-extrabold tracking-tight leading-none">
+              Lista della Spesa
+            </h1>
+            <p id="sync-status" class="text-[11px] text-emerald-200 mt-1 flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 inline-block"></span>
+              <span>Sincronizzata dal vivo</span>
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button
+            type="button"
+            onclick="shareShoppingList()"
+            id="share-btn"
+            class="text-xs font-semibold bg-white/15 hover:bg-white/25 border border-white/20 px-3 py-2 rounded-lg transition cursor-pointer"
+            title="Copia o condividi su WhatsApp"
+          >
+            📤 Invia
+          </button>
+          <button
+            type="button"
+            onclick="clearBoughtItems()"
+            id="clear-bought-btn"
+            class="hidden text-xs font-semibold bg-amber-400 text-stone-900 hover:bg-amber-300 px-3 py-2 rounded-lg shadow-xs transition cursor-pointer"
+          >
+            🧹 Svuota carrello (<span id="bought-count-badge">0</span>)
+          </button>
+        </div>
+      </div>
+
+      <!-- FILTRO RAPIDO CORSIE -->
+      <div class="max-w-3xl mx-auto px-4 pb-3 flex gap-1.5 overflow-x-auto no-scrollbar" id="aisle-filter-bar">
+        <!-- Popolato via JS -->
+      </div>
+    </header>
+
+    <main class="flex-1 max-w-3xl w-full mx-auto px-4 py-5 space-y-5">
+
+      <!-- MODULO AGGIUNTA RAPIDA -->
+      <form id="add-item-form" class="bg-white p-4 rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] border border-stone-200/80 space-y-3">
+        <div class="flex flex-col sm:flex-row gap-2.5">
+          <input
+            type="text"
+            id="item-name"
+            placeholder="Cosa manca? (es. Latte, Uova, Carta casa...)"
+            required
+            autocomplete="off"
+            class="flex-1 px-3.5 py-2.5 text-base sm:text-sm rounded-xl border border-stone-300 bg-stone-50/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#166534]/20 focus:border-[#166534] transition"
+          />
+          <input
+            type="text"
+            id="item-qty"
+            placeholder="Qtà / Note (es. 2 lt)"
+            autocomplete="off"
+            class="sm:w-36 px-3.5 py-2.5 text-base sm:text-sm rounded-xl border border-stone-300 bg-stone-50/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#166534]/20 focus:border-[#166534] transition"
+          />
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-2.5 pt-1">
+          <div class="flex items-center gap-2 flex-1 min-w-[200px]">
+            <label for="item-aisle" class="text-xs font-semibold text-stone-500 shrink-0">Corsia:</label>
+            <select
+              id="item-aisle"
+              class="flex-1 sm:flex-none px-3 py-2 text-xs font-semibold rounded-lg border border-stone-300 bg-stone-50 text-stone-800 focus:outline-none focus:border-[#166534] cursor-pointer"
+            >
+              <option value="ortofrutta">🍎 Frutta e Verdura</option>
+              <option value="freschi">🧀 Latticini, Salumi e Freschi</option>
+              <option value="carne_pesce">🥩 Carne e Pesce</option>
+              <option value="dispensa">🍝 Dispensa, Pasta e Colazione</option>
+              <option value="bevande">🥤 Acqua e Bevande</option>
+              <option value="surgelati">❄️ Surgelati</option>
+              <option value="casa">🧴 Casa e Igiene</option>
+            </select>
+          </div>
+
+          <button
+            type="submit"
+            class="w-full sm:w-auto bg-[#14532D] hover:bg-[#166534] text-white text-sm font-bold px-5 py-2.5 rounded-xl shadow-xs transition cursor-pointer"
+          >
+            + Aggiungi
+          </button>
+        </div>
+
+        <!-- AGGIUNTA RAPIDA CON UN TOCCO (PREFERITI DI CASA) -->
+        <div class="pt-2 border-t border-stone-100">
+          <p class="text-[10px] font-bold uppercase tracking-wider text-stone-400 mb-2">⚡ Aggiungi al volo:</p>
+          <div id="quick-pills" class="flex flex-wrap gap-1.5">
+            <!-- Generati via JS -->
+          </div>
+        </div>
+      </form>
+
+      <!-- RIEPILOGO CONTATORI -->
+      <div class="flex items-center justify-between px-1">
+        <h2 class="text-sm font-bold text-stone-700">
+          Da comprare: <span id="todo-count" class="text-[#14532D] font-extrabold">0</span>
+        </h2>
+        <span class="text-xs text-stone-400">Tocca un prodotto per metterlo nel carrello</span>
+      </div>
+
+      <!-- LISTA PRODOTTI DIVISA PER CORSIE -->
+      <div id="shopping-list-container" class="space-y-4">
+        <!-- Generato via JS -->
+      </div>
+
+      <!-- SEZIONE NEL CARRELLO (GIÀ PRESI) -->
+      <div id="bought-section" class="hidden pt-4 space-y-2.5">
+        <div class="flex items-center justify-between px-1">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-stone-400">
+            Nel carrello (<span id="bought-count">0</span>)
+          </h3>
+          <button
+            type="button"
+            onclick="clearBoughtItems()"
+            class="text-xs font-semibold text-red-600 hover:underline cursor-pointer"
+          >
+            Elimina tutti i presi
+          </button>
+        </div>
+        <div class="bg-white/80 rounded-2xl border border-stone-200/80 divide-y divide-stone-100 overflow-hidden" id="bought-list-container">
+          <!-- Prodotti spuntati -->
+        </div>
+      </div>
+
+    </main>
+
+    <footer class="max-w-3xl w-full mx-auto px-4 py-6 text-center text-xs text-stone-400">
+      Lista Spesa Condivisa · Aggiornamento automatico tra tutti i telefoni
+    </footer>
+  </div>
+
+  <!-- SCRIPT PWA + DATABASE FIREBASE -->
+  <script type="module">
+    // =========================================================================
+    // 0. CODICE D'ACCESSO FAMIGLIA (PUOI CAMBIARLO QUI)
+    // =========================================================================
+    const CODICE_ACCESSO = "25122026";
+
+    // =========================================================================
+    // 1. ICONA SVG + MANIFEST DINAMICO PER INSTALLAZIONE SU TELEFONO (PWA)
+    // =========================================================================
+    (function setupPWAManifest() {
+      const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="110" fill="#14532D"/><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-size="270">🛒</text></svg>`;
+      const iconUrl = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svgIcon)));
+
+      const linkFav = document.createElement("link");
+      linkFav.rel = "icon";
+      linkFav.href = iconUrl;
+      document.head.appendChild(linkFav);
+
+      const linkApple = document.createElement("link");
+      linkApple.rel = "apple-touch-icon";
+      linkApple.href = iconUrl;
+      document.head.appendChild(linkApple);
+
+      const manifest = {
+        name: "Lista Spesa — Famiglia",
+        short_name: "Lista Spesa",
+        start_url: ".",
+        display: "standalone",
+        background_color: "#F6F7F4",
+        theme_color: "#14532D",
+        icons: [
+          {
+            src: iconUrl,
+            sizes: "512x512",
+            type: "image/svg+xml",
+            purpose: "any maskable"
+          }
+        ]
+      };
+
+      const manifestBlob = new Blob([JSON.stringify(manifest)], { type: "application/manifest+json" });
+      const manifestLink = document.createElement("link");
+      manifestLink.rel = "manifest";
+      manifestLink.href = URL.createObjectURL(manifestBlob);
+      document.head.appendChild(manifestLink);
+    })();
+
+    // =========================================================================
+    // 2. CONFIGURAZIONE CORSIE E SCORCIATOIE RAPIDE
+    // =========================================================================
+    const CORSIE = [
+      { id: "ortofrutta", label: "🍎 Frutta e Verdura", color: "bg-emerald-50 text-emerald-900 border-emerald-200" },
+      { id: "freschi", label: "🧀 Latticini e Freschi", color: "bg-amber-50 text-amber-900 border-amber-200" },
+      { id: "carne_pesce", label: "🥩 Carne e Pesce", color: "bg-rose-50 text-rose-900 border-rose-200" },
+      { id: "dispensa", label: "🍝 Dispensa e Colazione", color: "bg-orange-50 text-orange-900 border-orange-200" },
+      { id: "bevande", label: "🥤 Acqua e Bevande", color: "bg-sky-50 text-sky-900 border-sky-200" },
+      { id: "surgelati", label: "❄️ Surgelati", color: "bg-cyan-50 text-cyan-900 border-cyan-200" },
+      { id: "casa", label: "🧴 Casa e Igiene", color: "bg-purple-50 text-purple-900 border-purple-200" }
+    ];
+
+    const QUICK_ITEMS = [
+      { name: "Latte", aisle: "freschi", icon: "🥛" },
+      { name: "Pane", aisle: "dispensa", icon: "🥖" },
+      { name: "Uova", aisle: "freschi", icon: "🥚" },
+      { name: "Acqua", aisle: "bevande", icon: "💧" },
+      { name: "Caffè", aisle: "dispensa", icon: "☕" },
+      { name: "Banane", aisle: "ortofrutta", icon: "🍌" },
+      { name: "Pasta", aisle: "dispensa", icon: "🍝" },
+      { name: "Carta igienica", aisle: "casa", icon: "🧻" }
+    ];
+
+    // =========================================================================
+    // 3. CONFIGURAZIONE FIREBASE (STESSO PROGETTO, COLLEZIONE SEPARATA "spesa")
+    // =========================================================================
+    const firebaseConfig = {
+      apiKey: "AIzaSyCqLyRhVU3Rk_9Z4d-VqHMfOgCmD08QyE0",
+      authDomain: "natale-famiglia.firebaseapp.com",
+      projectId: "natale-famiglia",
+      storageBucket: "natale-famiglia.firebasestorage.app",
+      messagingSenderId: "239854924008",
+      appId: "1:239854924008:web:3fdd01d2710a6ef40a595d"
+    };
+
+    let isGateUnlocked = localStorage.getItem('spesa_gate_unlocked') === CODICE_ACCESSO;
+    let items = [];
+    let activeAisleFilter = "all";
+    let useFirebase = false;
+    let db = null;
+    let firestoreFns = null;
+
+    // Sblocco Codice Famiglia
+    document.getElementById('family-code-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const input = document.getElementById('family-code-input');
+      const errorMsg = document.getElementById('family-code-error');
+      if (input.value.trim() === CODICE_ACCESSO) {
+        localStorage.setItem('spesa_gate_unlocked', CODICE_ACCESSO);
+        isGateUnlocked = true;
+        errorMsg.classList.add('hidden');
+        showApp();
+        await initStorage();
+      } else {
+        errorMsg.classList.remove('hidden');
+        input.value = '';
+        input.focus();
+      }
+    });
+
+    async function initStorage() {
+      const docId = "spesa_" + CODICE_ACCESSO;
+      try {
+        const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js");
+        const { getFirestore, doc, onSnapshot, setDoc } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
+
+        const app = initializeApp(firebaseConfig);
+        db = getFirestore(app);
+        firestoreFns = { doc, onSnapshot, setDoc, docId };
+        useFirebase = true;
+
+        onSnapshot(doc(db, "spesa", docId), (docSnap) => {
+          if (docSnap.exists()) {
+            items = docSnap.data().items || [];
+          } else {
+            items = [];
+          }
+          renderAll();
+        });
+        return;
+      } catch (err) {
+        console.error("Errore Firebase, uso memoria locale:", err);
+      }
+
+      const saved = localStorage.getItem('spesa_items_data');
+      items = saved ? JSON.parse(saved) : [];
+      renderAll();
+    }
+
+    async function saveItems() {
+      if (useFirebase && db && firestoreFns) {
+        await firestoreFns.setDoc(firestoreFns.doc(db, "spesa", firestoreFns.docId), {
+          items: items
+        });
+      } else {
+        localStorage.setItem('spesa_items_data', JSON.stringify(items));
+        renderAll();
+      }
+    }
+
+    function showApp() {
+      document.getElementById('gate-screen').classList.add('hidden');
+      document.getElementById('app-screen').classList.remove('hidden');
+      renderQuickPills();
+      renderAisleFilters();
+      renderAll();
+    }
+
+    // =========================================================================
+    // 4. AZIONI UTENTE (AGGIUNGI, SPUNTA, ELIMINA, SVUOTA CARRELLO)
+    // =========================================================================
+    document.getElementById('add-item-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const nameInput = document.getElementById('item-name');
+      const qtyInput = document.getElementById('item-qty');
+      const aisleSelect = document.getElementById('item-aisle');
+
+      const name = nameInput.value.trim();
+      const qty = qtyInput.value.trim();
+      const aisle = aisleSelect.value;
+
+      if (!name) return;
+
+      await addOrRestoreItem(name, qty, aisle);
+      nameInput.value = '';
+      qtyInput.value = '';
+      nameInput.focus();
+    });
+
+    window.quickAdd = async function(name, aisle) {
+      await addOrRestoreItem(name, "", aisle);
+    };
+
+    async function addOrRestoreItem(name, qty, aisle) {
+      // Se il prodotto esiste già tra quelli "nel carrello", lo rimette direttamente da comprare
+      const existingBought = items.find(
+        i => i.bought && i.name.toLowerCase() === name.toLowerCase()
+      );
+      if (existingBought) {
+        existingBought.bought = false;
+        if (qty) existingBought.qty = qty;
+        existingBought.aisle = aisle;
+        await saveItems();
+        return;
+      }
+
+      items.unshift({
+        id: Date.now().toString() + Math.random().toString(36).slice(2, 6),
+        name,
+        qty,
+        aisle,
+        bought: false
+      });
+      await saveItems();
+    }
+
+    window.toggleItem = async function(id) {
+      const item = items.find(i => i.id === id);
+      if (!item) return;
+      item.bought = !item.bought;
+      await saveItems();
+    };
+
+    window.deleteItem = async function(id) {
+      items = items.filter(i => i.id !== id);
+      await saveItems();
+    };
+
+    window.clearBoughtItems = async function() {
+      const boughtCount = items.filter(i => i.bought).length;
+      if (boughtCount === 0) return;
+      if (!confirm(`Vuoi rimuovere definitivamente i ${boughtCount} prodotti già messi nel carrello?`)) return;
+      items = items.filter(i => !i.bought);
+      await saveItems();
+    };
+
+    window.setAisleFilter = function(aisleId) {
+      activeAisleFilter = aisleId;
+      renderAisleFilters();
+      renderAll();
+    };
+
+    window.shareShoppingList = async function() {
+      const toBuy = items.filter(i => !i.bought);
+      if (toBuy.length === 0) {
+        alert("Non c'è nulla da comprare in lista!");
+        return;
+      }
+
+      const lines = CORSIE.map(c => {
+        const group = toBuy.filter(i => i.aisle === c.id);
+        if (group.length === 0) return null;
+        const rows = group.map(i => `  • ${i.name}${i.qty ? ` (${i.qty})` : ''}`).join('\n');
+        return `${c.label}\n${rows}`;
+      }).filter(Boolean);
+
+      const text = `🛒 *Lista della Spesa*\n\n${lines.join('\n\n')}`;
+
+      if (navigator.share) {
+        try {
+          await navigator.share({ title: "Lista della Spesa", text });
+          return;
+        } catch (_) {}
+      }
+
+      await navigator.clipboard.writeText(text);
+      const btn = document.getElementById('share-btn');
+      const old = btn.innerHTML;
+      btn.innerHTML = '✓ Copiata';
+      setTimeout(() => { btn.innerHTML = old; }, 2000);
+    };
+
+    // =========================================================================
+    // 5. RENDERING INTERFACCIA
+    // =========================================================================
+    function renderQuickPills() {
+      const container = document.getElementById('quick-pills');
+      container.innerHTML = QUICK_ITEMS.map(q => `
+        <button
+          type="button"
+          onclick="quickAdd('${q.name}', '${q.aisle}')"
+          class="text-xs font-medium bg-stone-100 hover:bg-emerald-50 hover:text-[#14532D] hover:border-emerald-300 text-stone-700 border border-stone-200 px-2.5 py-1 rounded-full transition cursor-pointer"
+        >
+          ${q.icon} + ${q.name}
+        </button>
+      `).join('');
+    }
+
+    function renderAisleFilters() {
+      const bar = document.getElementById('aisle-filter-bar');
+      const allBtn = `
+        <button
+          type="button"
+          onclick="setAisleFilter('all')"
+          class="shrink-0 text-xs font-semibold px-3 py-1.5 rounded-full transition cursor-pointer ${activeAisleFilter === 'all' ? 'bg-white text-[#14532D]' : 'bg-white/15 text-white hover:bg-white/25'}"
+        >
+          Tutte le corsie
+        </button>
+      `;
+
+      const otherBtns = CORSIE.map(c => `
+        <button
+          type="button"
+          onclick="setAisleFilter('${c.id}')"
+          class="shrink-0 text-xs font-semibold px-3 py-1.5 rounded-full transition cursor-pointer ${activeAisleFilter === c.id ? 'bg-white text-[#14532D]' : 'bg-white/15 text-white hover:bg-white/25'}"
+        >
+          ${c.label}
+        </button>
+      `).join('');
+
+      bar.innerHTML = allBtn + otherBtns;
+    }
+
+    function renderAll() {
+      const toBuy = items.filter(i => !i.bought);
+      const bought = items.filter(i => i.bought);
+
+      document.getElementById('todo-count').textContent = toBuy.length;
+      document.getElementById('bought-count').textContent = bought.length;
+      document.getElementById('bought-count-badge').textContent = bought.length;
+
+      const clearBtn = document.getElementById('clear-bought-btn');
+      if (bought.length > 0) {
+        clearBtn.classList.remove('hidden');
+      } else {
+        clearBtn.classList.add('hidden');
+      }
+
+      // Rendering prodotti da comprare raggruppati per corsia
+      const container = document.getElementById('shopping-list-container');
+      const filteredToBuy = activeAisleFilter === 'all'
+        ? toBuy
+        : toBuy.filter(i => i.aisle === activeAisleFilter);
+
+      if (filteredToBuy.length === 0) {
+        container.innerHTML = `
+          <div class="bg-white rounded-2xl border border-stone-200/80 p-10 text-center">
+            <p class="text-2xl mb-2">🎉</p>
+            <p class="text-sm font-semibold text-stone-700">Tutto preso!</p>
+            <p class="text-xs text-stone-400 mt-1">Non ci sono articoli da comprare${activeAisleFilter !== 'all' ? ' in questa corsia' : ''}.</p>
+          </div>
+        `;
+      } else {
+        container.innerHTML = CORSIE.map(corsia => {
+          const group = filteredToBuy.filter(i => i.aisle === corsia.id);
+          if (group.length === 0) return '';
+
+          return `
+            <div class="bg-white rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.03)] border border-stone-200/80 overflow-hidden">
+              <div class="px-4 py-2.5 border-b border-stone-100 flex items-center justify-between ${corsia.color}">
+                <span class="text-xs font-bold tracking-wide">${corsia.label}</span>
+                <span class="text-[11px] font-bold opacity-75">${group.length}</span>
+              </div>
+              <ul class="divide-y divide-stone-100">
+                ${group.map(item => `
+                  <li class="px-4 py-3 flex items-center justify-between gap-3 hover:bg-stone-50 transition">
+                    <button
+                      type="button"
+                      onclick="toggleItem('${item.id}')"
+                      class="flex items-center gap-3.5 flex-1 text-left cursor-pointer"
+                    >
+                      <span class="w-5 h-5 rounded-md border-2 border-stone-300 flex items-center justify-center shrink-0"></span>
+                      <div>
+                        <span class="text-sm font-semibold text-stone-900">${escapeHtml(item.name)}</span>
+                        ${item.qty ? `<span class="ml-2 text-xs font-medium text-[#14532D] bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md">${escapeHtml(item.qty)}</span>` : ''}
+                      </div>
+                    </button>
+                    <button
+                      type="button"
+                      onclick="deleteItem('${item.id}')"
+                      title="Elimina"
+                      class="text-stone-300 hover:text-red-600 px-2 py-1 text-sm cursor-pointer"
+                    >
+                      ✕
+                    </button>
+                  </li>
+                `).join('')}
+              </ul>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // Rendering prodotti già nel carrello
+      const boughtSection = document.getElementById('bought-section');
+      const boughtContainer = document.getElementById('bought-list-container');
+      if (bought.length === 0) {
+        boughtSection.classList.add('hidden');
+      } else {
+        boughtSection.classList.remove('hidden');
+        boughtContainer.innerHTML = bought.map(item => `
+          <div class="px-4 py-2.5 flex items-center justify-between gap-3">
+            <button
+              type="button"
+              onclick="toggleItem('${item.id}')"
+              class="flex items-center gap-3.5 flex-1 text-left cursor-pointer"
+            >
+              <span class="w-5 h-5 rounded-md bg-[#14532D] text-white text-xs font-bold flex items-center justify-center shrink-0">✓</span>
+              <span class="text-sm text-stone-400 line-through">${escapeHtml(item.name)}${item.qty ? ` (${escapeHtml(item.qty)})` : ''}</span>
+            </button>
+            <button
+              type="button"
+              onclick="deleteItem('${item.id}')"
+              class="text-stone-300 hover:text-red-600 px-2 py-1 text-xs cursor-pointer"
+            >
+              ✕
+            </button>
+          </div>
+        `).join('');
+      }
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    // Avvio
+    if (isGateUnlocked) {
+      showApp();
+      await initStorage();
+    }
+  </script>
+</body>
+</html>
