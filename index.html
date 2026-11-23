@@ -3,10 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Lista Spesa — Famiglia</title>
+  <title>Lista Spesa & Dispensa — Edizione Famiglia</title>
+
+  <!-- Anti-Cache per aggiornamento immediato -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
 
   <!-- Configurazione App Mobile (iPhone & Android) -->
-  <meta name="theme-color" content="#14532D" />
+  <meta name="theme-color" content="#0050AA" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Lista Spesa" />
@@ -16,17 +21,23 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --retail-blue: #0050AA;
+      --retail-blue-dark: #003878;
+      --retail-yellow: #FFF000;
+      --retail-red: #E60A14;
+      --bg-surface: #F4F6F9;
+      --ink: #111827;
+    }
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: #F6F7F4;
-      color: #1E293B;
+      background-color: var(--bg-surface);
+      color: var(--ink);
+      font-variant-numeric: tabular-nums;
       -webkit-font-smoothing: antialiased;
       -webkit-tap-highlight-color: transparent;
-    }
-    .header-market-banner {
-      background: linear-gradient(135deg, #14532D 0%, #166534 55%, #0F3D21 100%);
     }
     .no-scrollbar::-webkit-scrollbar {
       display: none;
@@ -37,28 +48,37 @@
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col selection:bg-[#166534] selection:text-white">
+<body class="min-h-screen flex flex-col selection:bg-[#0050AA] selection:text-white">
 
-  <!-- SCHERMATA 0: LUCCHETTO CODICE DI ACCESSO FAMIGLIA -->
-  <div id="gate-screen" class="min-h-screen flex items-center justify-center p-4 bg-[radial-gradient(ellipse_at_top,_#DCFCE7_0%,_#F6F7F4_65%)]">
-    <div class="bg-white max-w-md w-full rounded-2xl shadow-[0_20px_50px_rgba(20,83,45,0.12)] border border-emerald-900/10 overflow-hidden">
-      <div class="header-market-banner px-6 py-9 text-center text-white">
-        <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-white/15 backdrop-blur-xs border border-white/20 text-3xl mb-3">
-          🛒
+  <!-- SCHERMATA 0: ACCESSO RISERVATO FAMIGLIA -->
+  <div id="gate-screen" class="min-h-screen flex items-center justify-center p-4 sm:p-8 bg-[#F4F6F9]">
+    <div class="bg-white max-w-md w-full rounded-xl shadow-[0_12px_40px_rgba(0,80,170,0.12)] border border-slate-200 overflow-hidden">
+      <div class="bg-[#0050AA] px-7 py-9 text-center text-white relative">
+        <!-- Marchio stile GDO -->
+        <div class="inline-flex items-center justify-center w-14 h-14 rounded-lg bg-[#0050AA] border-2 border-[#FFF000] shadow-md mb-4 relative">
+          <span class="w-10 h-10 rounded-full bg-[#FFF000] flex items-center justify-center text-[#0050AA] font-black text-lg tracking-tighter border-2 border-[#E60A14]">
+            SP
+          </span>
         </div>
-        <p class="text-[10px] font-bold uppercase tracking-[0.24em] text-emerald-200 mb-1">
-          Casa & Supermercato · Tempo Reale
+        <p class="text-[11px] font-bold uppercase tracking-[0.2em] text-[#FFF000] mb-1">
+          Portale Spesa & Dispensa
         </p>
-        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+        <h1 class="text-2xl sm:text-3xl font-black tracking-tight text-white">
           Lista della Spesa
         </h1>
       </div>
 
-      <form id="family-code-form" class="p-7 space-y-5">
+      <div class="h-1.5 w-full flex">
+        <div class="flex-1 bg-[#FFF000]"></div>
+        <div class="flex-1 bg-[#E60A14]"></div>
+        <div class="flex-1 bg-[#003878]"></div>
+      </div>
+
+      <form id="family-code-form" class="p-7 sm:p-8 space-y-5">
         <div class="text-center">
-          <h2 class="text-lg font-bold text-stone-900">Inserisci il Codice Famiglia</h2>
-          <p class="text-xs text-stone-500 mt-1">
-            Richiesto solo al primo accesso su questo dispositivo.
+          <h2 class="text-lg font-extrabold text-slate-900">Accesso Registro Familiare</h2>
+          <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+            Inserisci il codice d'accesso condiviso per sincronizzare la lista della spesa su questo dispositivo.
           </p>
         </div>
 
@@ -72,40 +92,96 @@
             placeholder="••••••••"
             required
             autocomplete="off"
-            class="w-full px-4 py-3 text-center text-lg tracking-[0.35em] font-bold rounded-xl border border-stone-300 bg-stone-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#166534]/25 focus:border-[#166534] transition"
+            class="w-full px-4 py-3.5 text-center text-lg tracking-[0.35em] font-extrabold rounded-lg border-2 border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:border-[#0050AA] transition"
           />
-          <p id="family-code-error" class="hidden text-xs text-red-600 font-medium text-center mt-2">
-            Codice non valido. Riprova.
+          <p id="family-code-error" class="hidden text-xs text-[#E60A14] font-bold text-center mt-2">
+            Codice non valido. Verifica e riprova.
           </p>
         </div>
 
         <button
           type="submit"
-          class="w-full bg-[#14532D] hover:bg-[#166534] text-white text-sm font-bold py-3.5 rounded-xl shadow-sm transition cursor-pointer"
+          class="w-full bg-[#0050AA] hover:bg-[#003878] text-white text-xs uppercase tracking-wider font-extrabold py-4 rounded-lg shadow-sm transition cursor-pointer"
         >
-          Apri la Lista Spesa →
+          Entra nella Lista Spesa →
         </button>
       </form>
     </div>
   </div>
 
-  <!-- SCHERMATA 1: APPLICAZIONE PRINCIPALE -->
-  <div id="app-screen" class="hidden min-h-screen flex flex-col">
-
-    <!-- HEADER FISSO -->
-    <header class="header-market-banner text-white shadow-md sticky top-0 z-30">
-      <div class="max-w-3xl mx-auto px-4 py-3.5 flex items-center justify-between gap-3">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-white/15 border border-white/20 flex items-center justify-center text-xl shrink-0">
-            🛒
+  <!-- MODALE MODIFICA ARTICOLO -->
+  <div id="edit-modal" class="hidden fixed inset-0 z-40 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+    <div class="bg-white max-w-md w-full rounded-xl shadow-2xl border border-slate-200 overflow-hidden">
+      <div class="bg-[#0050AA] px-6 py-4 text-white flex items-center justify-between">
+        <div>
+          <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#FFF000]">Modifica Prodotto</p>
+          <h3 class="text-lg font-extrabold">Aggiorna Articolo</h3>
+        </div>
+        <button type="button" onclick="closeEditModal()" class="text-white/80 hover:text-white text-lg font-bold px-2 py-1 cursor-pointer">✕</button>
+      </div>
+      <div class="h-1 w-full bg-[#FFF000]"></div>
+      <form id="edit-item-form" class="p-6 space-y-4">
+        <input type="hidden" id="edit-item-id" />
+        <div>
+          <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1.5">Nome prodotto *</label>
+          <input type="text" id="edit-item-name" required class="w-full px-3.5 py-2.5 text-sm font-medium rounded-lg border-2 border-slate-200 focus:outline-none focus:border-[#0050AA]" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1.5">Quantità / Note</label>
+            <input type="text" id="edit-item-qty" placeholder="Es. 2 conf." class="w-full px-3.5 py-2.5 text-sm font-medium rounded-lg border-2 border-slate-200 focus:outline-none focus:border-[#0050AA]" />
           </div>
           <div>
-            <h1 class="text-lg sm:text-xl font-extrabold tracking-tight leading-none">
+            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1.5">Reparto</label>
+            <select id="edit-item-aisle" class="w-full px-3 py-2.5 text-sm font-semibold rounded-lg border-2 border-slate-200 bg-white focus:outline-none focus:border-[#0050AA]">
+              <option value="ortofrutta">01. Ortofrutta</option>
+              <option value="freschi">02. Latticini e Freschi</option>
+              <option value="carne_pesce">03. Macelleria e Pescheria</option>
+              <option value="dispensa">04. Dispensa e Forno</option>
+              <option value="bevande">05. Acqua e Bevande</option>
+              <option value="surgelati">06. Surgelati</option>
+              <option value="casa">07. Casa e Cura Persona</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex gap-2.5 pt-3 border-t border-slate-100">
+          <button type="button" onclick="closeEditModal()" class="flex-1 py-2.5 rounded-lg border-2 border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50 cursor-pointer">Annulla</button>
+          <button type="submit" class="flex-1 py-2.5 rounded-lg bg-[#0050AA] hover:bg-[#003878] text-white text-xs font-extrabold cursor-pointer">Salva Modifiche</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- SCHERMATA 1: APPLICAZIONE PRINCIPALE STILE RETAIL / GDO -->
+  <div id="app-screen" class="hidden min-h-screen flex flex-col">
+
+    <!-- BARRA SUPERIORE DI SERVIZIO -->
+    <div class="bg-[#003878] text-white text-[11px] font-semibold">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 py-1.5 flex items-center justify-between">
+        <span id="sync-status" class="flex items-center gap-1.5 text-sky-100">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 inline-block"></span>
+          <span>Sincronizzazione cloud attiva in tempo reale</span>
+        </span>
+        <span class="hidden sm:inline text-[#FFF000] font-bold tracking-wide">REGISTRO SPESA FAMILIARE</span>
+      </div>
+    </div>
+
+    <!-- HEADER PRINCIPALE BLU CON ACCENTI GIALLO/ROSSO -->
+    <header class="bg-[#0050AA] text-white shadow-md sticky top-0 z-30">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3.5">
+          <!-- Logo stile Lidl -->
+          <div class="w-11 h-11 rounded-lg bg-[#0050AA] border-2 border-[#FFF000] flex items-center justify-center shrink-0 shadow-xs">
+            <span class="w-8 h-8 rounded-full bg-[#FFF000] flex items-center justify-center text-[#0050AA] font-black text-xs tracking-tighter border-2 border-[#E60A14]">
+              SP
+            </span>
+          </div>
+          <div>
+            <h1 class="text-xl sm:text-2xl font-black tracking-tight text-white leading-none">
               Lista della Spesa
             </h1>
-            <p id="sync-status" class="text-[11px] text-emerald-200 mt-1 flex items-center gap-1.5">
-              <span class="w-2 h-2 rounded-full bg-emerald-400 inline-block"></span>
-              <span>Sincronizzata dal vivo</span>
+            <p class="text-xs text-sky-100 font-medium mt-1">
+              Organizzazione dispensa & corsie supermercato
             </p>
           </div>
         </div>
@@ -113,137 +189,303 @@
         <div class="flex items-center gap-2">
           <button
             type="button"
-            onclick="shareShoppingList()"
-            id="share-btn"
-            class="text-xs font-semibold bg-white/15 hover:bg-white/25 border border-white/20 px-3 py-2 rounded-lg transition cursor-pointer"
-            title="Copia o condividi su WhatsApp"
+            onclick="forceRefreshApp()"
+            title="Aggiorna app ora"
+            class="text-xs font-bold text-white bg-white/10 hover:bg-white/20 border border-white/20 p-2.5 rounded-lg transition cursor-pointer"
           >
-            📤 Invia
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
           </button>
+
           <button
             type="button"
-            onclick="clearBoughtItems()"
-            id="clear-bought-btn"
-            class="hidden text-xs font-semibold bg-amber-400 text-stone-900 hover:bg-amber-300 px-3 py-2 rounded-lg shadow-xs transition cursor-pointer"
+            onclick="shareShoppingList()"
+            id="share-btn"
+            class="text-xs font-extrabold text-[#003878] bg-[#FFF000] hover:bg-yellow-300 px-3.5 py-2.5 rounded-lg shadow-xs transition cursor-pointer inline-flex items-center gap-1.5"
           >
-            🧹 Svuota carrello (<span id="bought-count-badge">0</span>)
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+            </svg>
+            <span>Condividi Lista</span>
           </button>
         </div>
       </div>
 
-      <!-- FILTRO RAPIDO CORSIE -->
-      <div class="max-w-3xl mx-auto px-4 pb-3 flex gap-1.5 overflow-x-auto no-scrollbar" id="aisle-filter-bar">
-        <!-- Popolato via JS -->
+      <!-- NAVIGAZIONE PRINCIPALE A DUE SCHEDE -->
+      <div class="bg-white border-b border-slate-200 text-slate-800">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 flex">
+          <button
+            type="button"
+            id="tab-add-section"
+            onclick="switchTab('add')"
+            class="flex-1 sm:flex-none px-5 py-3.5 text-xs sm:text-sm font-extrabold border-b-4 border-[#0050AA] text-[#0050AA] transition cursor-pointer flex items-center justify-center gap-2"
+          >
+            <span>1. Aggiungi Articoli</span>
+          </button>
+
+          <button
+            type="button"
+            id="tab-cart-section"
+            onclick="switchTab('cart')"
+            class="flex-1 sm:flex-none px-5 py-3.5 text-xs sm:text-sm font-bold border-b-4 border-transparent text-slate-500 hover:text-[#0050AA] transition cursor-pointer flex items-center justify-center gap-2"
+          >
+            <span>2. Carrello & Spesa</span>
+            <span id="tab-todo-badge" class="text-[11px] font-black bg-[#E60A14] text-white px-2 py-0.5 rounded-full">0</span>
+          </button>
+        </div>
       </div>
     </header>
 
-    <main class="flex-1 max-w-3xl w-full mx-auto px-4 py-5 space-y-5">
+    <main class="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-6 space-y-6">
 
-      <!-- MODULO AGGIUNTA RAPIDA -->
-      <form id="add-item-form" class="bg-white p-4 rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] border border-stone-200/80 space-y-3">
-        <div class="flex flex-col sm:flex-row gap-2.5">
-          <input
-            type="text"
-            id="item-name"
-            placeholder="Cosa manca? (es. Latte, Uova, Carta casa...)"
-            required
-            autocomplete="off"
-            class="flex-1 px-3.5 py-2.5 text-base sm:text-sm rounded-xl border border-stone-300 bg-stone-50/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#166534]/20 focus:border-[#166534] transition"
-          />
-          <input
-            type="text"
-            id="item-qty"
-            placeholder="Qtà / Note (es. 2 lt)"
-            autocomplete="off"
-            class="sm:w-36 px-3.5 py-2.5 text-base sm:text-sm rounded-xl border border-stone-300 bg-stone-50/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#166534]/20 focus:border-[#166534] transition"
-          />
+      <!-- BARRA STATO & AVANZAMENTO SPESA -->
+      <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-2xs grid grid-cols-1 sm:grid-cols-12 gap-4 items-center">
+        <div class="sm:col-span-7 flex items-center justify-around sm:justify-start sm:gap-8 divide-x sm:divide-x-0 divide-slate-200">
+          <div class="px-3 sm:px-0">
+            <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Da comprare</span>
+            <span id="kpi-todo" class="text-2xl font-black text-[#0050AA]">0</span>
+          </div>
+          <div class="px-3 sm:px-0">
+            <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Nel carrello</span>
+            <span id="kpi-bought" class="text-2xl font-black text-emerald-700">0</span>
+          </div>
+          <div class="px-3 sm:px-0">
+            <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Completamento</span>
+            <span id="kpi-progress" class="text-2xl font-black text-slate-900">0%</span>
+          </div>
         </div>
 
-        <div class="flex flex-wrap items-center justify-between gap-2.5 pt-1">
-          <div class="flex items-center gap-2 flex-1 min-w-[200px]">
-            <label for="item-aisle" class="text-xs font-semibold text-stone-500 shrink-0">Corsia:</label>
-            <select
-              id="item-aisle"
-              class="flex-1 sm:flex-none px-3 py-2 text-xs font-semibold rounded-lg border border-stone-300 bg-stone-50 text-stone-800 focus:outline-none focus:border-[#166534] cursor-pointer"
+        <div class="sm:col-span-5 space-y-1.5">
+          <div class="flex justify-between text-[11px] font-bold text-slate-500">
+            <span>Avanzamento spesa</span>
+            <span id="progress-label-detail">0 di 0 articoli</span>
+          </div>
+          <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
+            <div id="progress-bar-fill" class="h-full bg-[#0050AA] transition-all duration-300" style="width: 0%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- =================================================================== -->
+      <!-- SEZIONE 1: AGGIUNGI ARTICOLI (DISPENSA DI CASA)                     -->
+      <!-- =================================================================== -->
+      <section id="section-add" class="space-y-6">
+
+        <!-- MODULO INSERIMENTO ARTICOLO -->
+        <form id="add-item-form" class="bg-white p-5 sm:p-6 rounded-xl shadow-2xs border border-slate-200 space-y-5">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3.5">
+            <div class="flex items-center gap-2.5">
+              <span class="w-1.5 h-6 bg-[#0050AA] rounded-full"></span>
+              <div>
+                <h2 class="text-base sm:text-lg font-extrabold text-slate-900">Aggiungi un nuovo prodotto</h2>
+                <p class="text-xs text-slate-500">Compila i campi oppure seleziona direttamente dalle voci frequenti qui sotto.</p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onclick="switchTab('cart')"
+              class="text-xs font-extrabold text-[#0050AA] hover:bg-blue-50 border-2 border-[#0050AA] px-3.5 py-1.5 rounded-lg transition cursor-pointer"
             >
-              <option value="ortofrutta">🍎 Frutta e Verdura</option>
-              <option value="freschi">🧀 Latticini, Salumi e Freschi</option>
-              <option value="carne_pesce">🥩 Carne e Pesce</option>
-              <option value="dispensa">🍝 Dispensa, Pasta e Colazione</option>
-              <option value="bevande">🥤 Acqua e Bevande</option>
-              <option value="surgelati">❄️ Surgelati</option>
-              <option value="casa">🧴 Casa e Igiene</option>
-            </select>
+              Vai al Carrello →
+            </button>
           </div>
 
-          <button
-            type="submit"
-            class="w-full sm:w-auto bg-[#14532D] hover:bg-[#166534] text-white text-sm font-bold px-5 py-2.5 rounded-xl shadow-xs transition cursor-pointer"
-          >
-            + Aggiungi
-          </button>
-        </div>
+          <div class="grid grid-cols-1 sm:grid-cols-12 gap-3.5">
+            <div class="sm:col-span-6">
+              <label for="item-name" class="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1.5">
+                Prodotto <span class="text-[#E60A14]">*</span>
+              </label>
+              <input
+                type="text"
+                id="item-name"
+                placeholder="Es. Latte intero, Parmigiano, Olio EVO..."
+                required
+                autocomplete="off"
+                class="w-full px-3.5 py-2.5 text-base sm:text-sm font-medium rounded-lg border-2 border-slate-200 bg-slate-50/60 focus:bg-white focus:outline-none focus:border-[#0050AA] transition"
+              />
+            </div>
 
-        <!-- AGGIUNTA RAPIDA CON UN TOCCO (PREFERITI DI CASA) -->
-        <div class="pt-2 border-t border-stone-100">
-          <p class="text-[10px] font-bold uppercase tracking-wider text-stone-400 mb-2">⚡ Aggiungi al volo:</p>
-          <div id="quick-pills" class="flex flex-wrap gap-1.5">
-            <!-- Generati via JS -->
+            <div class="sm:col-span-3">
+              <label for="item-qty" class="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1.5">
+                Quantità / Note
+              </label>
+              <input
+                type="text"
+                id="item-qty"
+                placeholder="Es. 2 litri, 500 g..."
+                autocomplete="off"
+                class="w-full px-3.5 py-2.5 text-base sm:text-sm font-medium rounded-lg border-2 border-slate-200 bg-slate-50/60 focus:bg-white focus:outline-none focus:border-[#0050AA] transition"
+              />
+            </div>
+
+            <div class="sm:col-span-3">
+              <label for="item-aisle" class="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1.5">
+                Reparto
+              </label>
+              <select
+                id="item-aisle"
+                class="w-full px-3 py-2.5 text-base sm:text-sm font-bold rounded-lg border-2 border-slate-200 bg-slate-50/60 focus:bg-white text-slate-800 focus:outline-none focus:border-[#0050AA] cursor-pointer"
+              >
+                <option value="ortofrutta">01. Ortofrutta</option>
+                <option value="freschi">02. Latticini e Freschi</option>
+                <option value="carne_pesce">03. Macelleria e Pescheria</option>
+                <option value="dispensa">04. Dispensa e Forno</option>
+                <option value="bevande">05. Acqua e Bevande</option>
+                <option value="surgelati">06. Surgelati</option>
+                <option value="casa">07. Casa e Cura Persona</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="flex justify-end">
+            <button
+              type="submit"
+              class="w-full sm:w-auto shrink-0 bg-[#0050AA] hover:bg-[#003878] text-white text-xs uppercase tracking-wider font-extrabold px-6 py-3.5 rounded-lg shadow-xs transition cursor-pointer"
+            >
+              + Aggiungi alla lista
+            </button>
+          </div>
+        </form>
+
+        <!-- GRIGLIA CATALOGO VOCI FREQUENTI STILE GDO -->
+        <div class="bg-white p-5 sm:p-6 rounded-xl shadow-2xs border border-slate-200 space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3.5">
+            <div class="flex items-center gap-2.5">
+              <span class="px-2 py-0.5 text-[10px] font-black uppercase tracking-wider bg-[#FFF000] text-[#003878] rounded">Rapidi</span>
+              <div>
+                <h3 class="text-base font-extrabold text-slate-900">Voci frequenti di famiglia</h3>
+                <p class="text-xs text-slate-500">Tocca un articolo per inserirlo subito nel reparto corretto.</p>
+              </div>
+            </div>
+            <input
+              type="search"
+              id="quick-search-input"
+              oninput="window.renderQuickPills()"
+              placeholder="Cerca nelle voci frequenti..."
+              class="sm:w-64 px-3.5 py-2 text-xs font-medium rounded-lg border-2 border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:border-[#0050AA]"
+            />
+          </div>
+
+          <div id="quick-pills" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+            <!-- Popolato con le card frequenti -->
           </div>
         </div>
-      </form>
 
-      <!-- RIEPILOGO CONTATORI -->
-      <div class="flex items-center justify-between px-1">
-        <h2 class="text-sm font-bold text-stone-700">
-          Da comprare: <span id="todo-count" class="text-[#14532D] font-extrabold">0</span>
-        </h2>
-        <span class="text-xs text-stone-400">Tocca un prodotto per metterlo nel carrello</span>
-      </div>
+        <!-- ELENCO ARTICOLI ATTUALMENTE IN LISTA -->
+        <div class="bg-white rounded-xl shadow-2xs border border-slate-200 overflow-hidden">
+          <div class="px-5 py-4 border-b border-slate-200 bg-slate-50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="flex items-center gap-2.5">
+              <h3 class="text-base font-extrabold text-slate-900">Articoli in lista</h3>
+              <span id="add-section-count" class="text-xs font-extrabold bg-[#0050AA] text-white px-2.5 py-0.5 rounded-full">0</span>
+            </div>
 
-      <!-- LISTA PRODOTTI DIVISA PER CORSIE -->
-      <div id="shopping-list-container" class="space-y-4">
-        <!-- Generato via JS -->
-      </div>
+            <div class="sm:w-64">
+              <input
+                type="search"
+                id="manage-search-input"
+                oninput="window.renderAll()"
+                placeholder="Filtra elenco per nome..."
+                class="w-full px-3.5 py-1.5 text-xs font-medium rounded-lg border-2 border-slate-200 bg-white focus:outline-none focus:border-[#0050AA]"
+              />
+            </div>
+          </div>
 
-      <!-- SEZIONE NEL CARRELLO (GIÀ PRESI) -->
-      <div id="bought-section" class="hidden pt-4 space-y-2.5">
-        <div class="flex items-center justify-between px-1">
-          <h3 class="text-xs font-bold uppercase tracking-wider text-stone-400">
-            Nel carrello (<span id="bought-count">0</span>)
-          </h3>
-          <button
-            type="button"
-            onclick="clearBoughtItems()"
-            class="text-xs font-semibold text-red-600 hover:underline cursor-pointer"
-          >
-            Elimina tutti i presi
-          </button>
+          <ul id="manage-list-container" class="divide-y divide-slate-100">
+            <!-- Elenco gestibile -->
+          </ul>
         </div>
-        <div class="bg-white/80 rounded-2xl border border-stone-200/80 divide-y divide-stone-100 overflow-hidden" id="bought-list-container">
-          <!-- Prodotti spuntati -->
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- SEZIONE 2: CARRELLO & SPESA (AL SUPERMERCATO - SPUNTA E CONTROLLO)  -->
+      <!-- =================================================================== -->
+      <section id="section-cart" class="hidden space-y-5">
+
+        <!-- BARRA FILTRO REPARTI + CHIUSURA SPESA -->
+        <div class="bg-white p-4 sm:p-5 rounded-xl shadow-2xs border border-slate-200 space-y-3.5">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-2.5">
+              <span class="w-1.5 h-6 bg-[#E60A14] rounded-full"></span>
+              <div>
+                <h2 class="text-base sm:text-lg font-extrabold text-slate-900">Corsie & Carrello</h2>
+                <p class="text-xs text-slate-500">Spunta i prodotti man mano che li metti nel carrello.</p>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onclick="clearBoughtItems()"
+              id="clear-bought-btn"
+              class="hidden text-xs font-extrabold bg-[#E60A14] text-white hover:bg-red-700 px-4 py-2.5 rounded-lg shadow-xs transition cursor-pointer"
+            >
+              Svuota carrello · Presi (<span id="bought-count-badge">0</span>)
+            </button>
+          </div>
+
+          <!-- FILTRO PER REPARTO -->
+          <div class="flex gap-1.5 overflow-x-auto no-scrollbar pt-2 border-t border-slate-100" id="aisle-filter-bar">
+            <!-- Popolato via JS -->
+          </div>
         </div>
-      </div>
+
+        <!-- LISTA ARTICOLI DIVISA PER REPARTO DA SPUNTARE -->
+        <div id="shopping-list-container" class="space-y-4">
+          <!-- Generato via JS -->
+        </div>
+
+        <!-- PRODOTTI GIÀ MESSI NEL CARRELLO -->
+        <div id="bought-section" class="hidden pt-3 space-y-3">
+          <div class="flex items-center justify-between px-1">
+            <div class="flex items-center gap-2">
+              <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-500">Prodotti già nel carrello</h3>
+              <span id="bought-count" class="text-xs font-extrabold bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full">0</span>
+            </div>
+            <button
+              type="button"
+              onclick="clearBoughtItems()"
+              class="text-xs font-bold text-[#E60A14] hover:underline cursor-pointer"
+            >
+              Elimina tutti i presi
+            </button>
+          </div>
+          <div class="bg-white rounded-xl border border-slate-200 divide-y divide-slate-100 overflow-hidden shadow-2xs" id="bought-list-container">
+            <!-- Prodotti spuntati -->
+          </div>
+        </div>
+      </section>
 
     </main>
 
-    <footer class="max-w-3xl w-full mx-auto px-4 py-6 text-center text-xs text-stone-400">
-      Lista Spesa Condivisa · Aggiornamento automatico tra tutti i telefoni
+    <footer class="max-w-5xl w-full mx-auto px-4 sm:px-6 py-6 border-t border-slate-200 text-center text-xs text-slate-400 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <span class="font-semibold text-slate-500">Lista della Spesa · Edizione Famiglia</span>
+      <span class="text-[#0050AA] font-bold">Sincronizzazione Cloud Istantanea</span>
     </footer>
   </div>
 
-  <!-- SCRIPT PWA + DATABASE FIREBASE -->
+  <!-- SCRIPT PWA + AUTO-AGGIORNAMENTO + FIREBASE REALTIME -->
   <script type="module">
     // =========================================================================
-    // 0. CODICE D'ACCESSO FAMIGLIA (PUOI CAMBIARLO QUI)
+    // 0. VERSIONE APP E CODICE D'ACCESSO FAMIGLIA
     // =========================================================================
+    const APP_VERSION = "4.0.0";
     const CODICE_ACCESSO = "25122026";
 
+    (function checkAppVersion() {
+      const savedVersion = localStorage.getItem('spesa_app_version');
+      if (savedVersion && savedVersion !== APP_VERSION) {
+        localStorage.setItem('spesa_app_version', APP_VERSION);
+        window.location.reload(true);
+        return;
+      }
+      localStorage.setItem('spesa_app_version', APP_VERSION);
+    })();
+
     // =========================================================================
-    // 1. ICONA SVG + MANIFEST DINAMICO PER INSTALLAZIONE SU TELEFONO (PWA)
+    // 1. ICONA STILE RETAIL + MANIFEST DINAMICO PWA
     // =========================================================================
     (function setupPWAManifest() {
-      const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="110" fill="#14532D"/><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-size="270">🛒</text></svg>`;
+      const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="96" fill="#0050AA"/><circle cx="256" cy="256" r="185" fill="#FFF000" stroke="#E60A14" stroke-width="22"/><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-family="Arial, sans-serif" font-weight="900" font-size="165" fill="#0050AA">SP</text></svg>`;
       const iconUrl = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svgIcon)));
 
       const linkFav = document.createElement("link");
@@ -257,12 +499,12 @@
       document.head.appendChild(linkApple);
 
       const manifest = {
-        name: "Lista Spesa — Famiglia",
+        name: "Lista della Spesa — Famiglia",
         short_name: "Lista Spesa",
         start_url: ".",
         display: "standalone",
-        background_color: "#F6F7F4",
-        theme_color: "#14532D",
+        background_color: "#F4F6F9",
+        theme_color: "#0050AA",
         icons: [
           {
             src: iconUrl,
@@ -281,31 +523,61 @@
     })();
 
     // =========================================================================
-    // 2. CONFIGURAZIONE CORSIE E SCORCIATOIE RAPIDE
+    // 2. REPARTI ORDINATI E VOCI FREQUENTI DELLA FAMIGLIA
     // =========================================================================
-    const CORSIE = [
-      { id: "ortofrutta", label: "🍎 Frutta e Verdura", color: "bg-emerald-50 text-emerald-900 border-emerald-200" },
-      { id: "freschi", label: "🧀 Latticini e Freschi", color: "bg-amber-50 text-amber-900 border-amber-200" },
-      { id: "carne_pesce", label: "🥩 Carne e Pesce", color: "bg-rose-50 text-rose-900 border-rose-200" },
-      { id: "dispensa", label: "🍝 Dispensa e Colazione", color: "bg-orange-50 text-orange-900 border-orange-200" },
-      { id: "bevande", label: "🥤 Acqua e Bevande", color: "bg-sky-50 text-sky-900 border-sky-200" },
-      { id: "surgelati", label: "❄️ Surgelati", color: "bg-cyan-50 text-cyan-900 border-cyan-200" },
-      { id: "casa", label: "🧴 Casa e Igiene", color: "bg-purple-50 text-purple-900 border-purple-200" }
+    const REPARTI = [
+      { id: "ortofrutta", code: "01", label: "Ortofrutta", badge: "bg-emerald-100 text-emerald-800", border: "border-t-4 border-t-emerald-600" },
+      { id: "freschi", code: "02", label: "Latticini e Freschi", badge: "bg-amber-100 text-amber-800", border: "border-t-4 border-t-amber-500" },
+      { id: "carne_pesce", code: "03", label: "Macelleria e Pescheria", badge: "bg-rose-100 text-rose-800", border: "border-t-4 border-t-[#E60A14]" },
+      { id: "dispensa", code: "04", label: "Dispensa e Forno", badge: "bg-blue-100 text-[#0050AA]", border: "border-t-4 border-t-[#0050AA]" },
+      { id: "bevande", code: "05", label: "Acqua e Bevande", badge: "bg-sky-100 text-sky-800", border: "border-t-4 border-t-sky-500" },
+      { id: "surgelati", code: "06", label: "Surgelati", badge: "bg-cyan-100 text-cyan-800", border: "border-t-4 border-t-cyan-600" },
+      { id: "casa", code: "07", label: "Casa e Cura Persona", badge: "bg-slate-200 text-slate-800", border: "border-t-4 border-t-slate-600" }
     ];
 
     const QUICK_ITEMS = [
-      { name: "Latte", aisle: "freschi", icon: "🥛" },
-      { name: "Pane", aisle: "dispensa", icon: "🥖" },
-      { name: "Uova", aisle: "freschi", icon: "🥚" },
-      { name: "Acqua", aisle: "bevande", icon: "💧" },
-      { name: "Caffè", aisle: "dispensa", icon: "☕" },
-      { name: "Banane", aisle: "ortofrutta", icon: "🍌" },
-      { name: "Pasta", aisle: "dispensa", icon: "🍝" },
-      { name: "Carta igienica", aisle: "casa", icon: "🧻" }
+      // 01. Ortofrutta
+      { name: "Insalata", aisle: "ortofrutta" },
+      { name: "Banane", aisle: "ortofrutta" },
+      { name: "Peperoni", aisle: "ortofrutta" },
+      // 02. Latticini e Freschi
+      { name: "Latte", aisle: "freschi" },
+      { name: "Uova", aisle: "freschi" },
+      { name: "Affettato", aisle: "freschi" },
+      { name: "Sottilette", aisle: "freschi" },
+      { name: "Grana", aisle: "freschi" },
+      { name: "Formaggi", aisle: "freschi" },
+      // 04. Dispensa e Forno
+      { name: "Caffè", aisle: "dispensa" },
+      { name: "Pasta", aisle: "dispensa" },
+      { name: "Piadine", aisle: "dispensa" },
+      { name: "Crackers", aisle: "dispensa" },
+      { name: "Insalatissime", aisle: "dispensa" },
+      { name: "Salsa Mutti", aisle: "dispensa" },
+      { name: "Salsa ciliegino", aisle: "dispensa" },
+      { name: "Ketchup", aisle: "dispensa" },
+      { name: "Zucchero", aisle: "dispensa" },
+      { name: "Merende", aisle: "dispensa" },
+      { name: "Fette biscottate", aisle: "dispensa" },
+      { name: "Biscotti", aisle: "dispensa" },
+      { name: "Olio", aisle: "dispensa" },
+      { name: "Aceto", aisle: "dispensa" },
+      { name: "Sale", aisle: "dispensa" },
+      // 05. Acqua e Bevande
+      { name: "Acqua", aisle: "bevande" },
+      // 06. Surgelati
+      { name: "Surgelati", aisle: "surgelati" },
+      { name: "Pesce surgelato", aisle: "surgelati" },
+      { name: "Pizze", aisle: "surgelati" },
+      { name: "Gelati", aisle: "surgelati" },
+      // 07. Casa e Cura Persona
+      { name: "Tovaglioli", aisle: "casa" },
+      { name: "Fazzoletti", aisle: "casa" },
+      { name: "Carta igienica", aisle: "casa" }
     ];
 
     // =========================================================================
-    // 3. CONFIGURAZIONE FIREBASE (STESSO PROGETTO, COLLEZIONE SEPARATA "spesa")
+    // 3. FIREBASE REALTIME
     // =========================================================================
     const firebaseConfig = {
       apiKey: "AIzaSyCqLyRhVU3Rk_9Z4d-VqHMfOgCmD08QyE0",
@@ -323,7 +595,6 @@
     let db = null;
     let firestoreFns = null;
 
-    // Sblocco Codice Famiglia
     document.getElementById('family-code-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const input = document.getElementById('family-code-input');
@@ -343,6 +614,13 @@
 
     async function initStorage() {
       const docId = "spesa_" + CODICE_ACCESSO;
+
+      const cached = localStorage.getItem('spesa_items_cache');
+      if (cached) {
+        items = JSON.parse(cached);
+        window.renderAll();
+      }
+
       try {
         const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js");
         const { getFirestore, doc, onSnapshot, setDoc } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
@@ -352,45 +630,80 @@
         firestoreFns = { doc, onSnapshot, setDoc, docId };
         useFirebase = true;
 
-        onSnapshot(doc(db, "spesa", docId), (docSnap) => {
+        onSnapshot(doc(db, "spesa", docId), { includeMetadataChanges: true }, (docSnap) => {
           if (docSnap.exists()) {
             items = docSnap.data().items || [];
           } else {
             items = [];
           }
-          renderAll();
+          localStorage.setItem('spesa_items_cache', JSON.stringify(items));
+          window.renderAll();
         });
         return;
       } catch (err) {
-        console.error("Errore Firebase, uso memoria locale:", err);
+        console.error("Connessione cloud non disponibile, uso memoria locale:", err);
       }
-
-      const saved = localStorage.getItem('spesa_items_data');
-      items = saved ? JSON.parse(saved) : [];
-      renderAll();
     }
 
     async function saveItems() {
+      localStorage.setItem('spesa_items_cache', JSON.stringify(items));
+      window.renderAll();
+
       if (useFirebase && db && firestoreFns) {
+        setSyncIndicator("Sincronizzazione in corso...");
         await firestoreFns.setDoc(firestoreFns.doc(db, "spesa", firestoreFns.docId), {
-          items: items
+          items: items,
+          updatedAt: Date.now()
         });
-      } else {
-        localStorage.setItem('spesa_items_data', JSON.stringify(items));
-        renderAll();
+        setSyncIndicator("Sincronizzazione cloud attiva in tempo reale");
       }
     }
+
+    function setSyncIndicator(text) {
+      const el = document.getElementById('sync-status');
+      if (el) {
+        el.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 inline-block"></span><span>${text}</span>`;
+      }
+    }
+
+    window.forceRefreshApp = function() {
+      const url = new URL(window.location.href);
+      url.searchParams.set('v', Date.now().toString());
+      window.location.replace(url.toString());
+    };
 
     function showApp() {
       document.getElementById('gate-screen').classList.add('hidden');
       document.getElementById('app-screen').classList.remove('hidden');
-      renderQuickPills();
+      window.renderQuickPills();
       renderAisleFilters();
-      renderAll();
+      window.renderAll();
     }
 
     // =========================================================================
-    // 4. AZIONI UTENTE (AGGIUNGI, SPUNTA, ELIMINA, SVUOTA CARRELLO)
+    // 4. NAVIGAZIONE TRA LE DUE SEZIONI
+    // =========================================================================
+    window.switchTab = function(tab) {
+      const addBtn = document.getElementById('tab-add-section');
+      const cartBtn = document.getElementById('tab-cart-section');
+      const addSec = document.getElementById('section-add');
+      const cartSec = document.getElementById('section-cart');
+
+      if (tab === 'add') {
+        addBtn.className = "flex-1 sm:flex-none px-5 py-3.5 text-xs sm:text-sm font-extrabold border-b-4 border-[#0050AA] text-[#0050AA] transition cursor-pointer flex items-center justify-center gap-2";
+        cartBtn.className = "flex-1 sm:flex-none px-5 py-3.5 text-xs sm:text-sm font-bold border-b-4 border-transparent text-slate-500 hover:text-[#0050AA] transition cursor-pointer flex items-center justify-center gap-2";
+        addSec.classList.remove('hidden');
+        cartSec.classList.add('hidden');
+      } else {
+        cartBtn.className = "flex-1 sm:flex-none px-5 py-3.5 text-xs sm:text-sm font-extrabold border-b-4 border-[#0050AA] text-[#0050AA] transition cursor-pointer flex items-center justify-center gap-2";
+        addBtn.className = "flex-1 sm:flex-none px-5 py-3.5 text-xs sm:text-sm font-bold border-b-4 border-transparent text-slate-500 hover:text-[#0050AA] transition cursor-pointer flex items-center justify-center gap-2";
+        cartSec.classList.remove('hidden');
+        addSec.classList.add('hidden');
+      }
+    };
+
+    // =========================================================================
+    // 5. OPERAZIONI SU ARTICOLI
     // =========================================================================
     document.getElementById('add-item-form').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -404,10 +717,11 @@
 
       if (!name) return;
 
-      await addOrRestoreItem(name, qty, aisle);
       nameInput.value = '';
       qtyInput.value = '';
       nameInput.focus();
+
+      await addOrRestoreItem(name, qty, aisle);
     });
 
     window.quickAdd = async function(name, aisle) {
@@ -415,7 +729,20 @@
     };
 
     async function addOrRestoreItem(name, qty, aisle) {
-      // Se il prodotto esiste già tra quelli "nel carrello", lo rimette direttamente da comprare
+      const alreadyActive = items.find(
+        i => !i.bought && i.name.toLowerCase() === name.toLowerCase()
+      );
+      if (alreadyActive) {
+        if (qty) {
+          alreadyActive.qty = qty;
+          alreadyActive.aisle = aisle;
+          await saveItems();
+        } else {
+          alert(`"${alreadyActive.name}" è già presente nella lista degli articoli da comprare.`);
+        }
+        return;
+      }
+
       const existingBought = items.find(
         i => i.bought && i.name.toLowerCase() === name.toLowerCase()
       );
@@ -444,6 +771,34 @@
       await saveItems();
     };
 
+    window.openEditModal = function(id) {
+      const item = items.find(i => i.id === id);
+      if (!item) return;
+      document.getElementById('edit-item-id').value = item.id;
+      document.getElementById('edit-item-name').value = item.name;
+      document.getElementById('edit-item-qty').value = item.qty || '';
+      document.getElementById('edit-item-aisle').value = item.aisle;
+      document.getElementById('edit-modal').classList.remove('hidden');
+    };
+
+    window.closeEditModal = function() {
+      document.getElementById('edit-modal').classList.add('hidden');
+    };
+
+    document.getElementById('edit-item-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('edit-item-id').value;
+      const item = items.find(i => i.id === id);
+      if (!item) return;
+
+      item.name = document.getElementById('edit-item-name').value.trim();
+      item.qty = document.getElementById('edit-item-qty').value.trim();
+      item.aisle = document.getElementById('edit-item-aisle').value;
+
+      closeEditModal();
+      await saveItems();
+    });
+
     window.deleteItem = async function(id) {
       items = items.filter(i => i.id !== id);
       await saveItems();
@@ -452,7 +807,7 @@
     window.clearBoughtItems = async function() {
       const boughtCount = items.filter(i => i.bought).length;
       if (boughtCount === 0) return;
-      if (!confirm(`Vuoi rimuovere definitivamente i ${boughtCount} prodotti già messi nel carrello?`)) return;
+      if (!confirm(`Vuoi rimuovere definitivamente i ${boughtCount} articoli già messi nel carrello?`)) return;
       items = items.filter(i => !i.bought);
       await saveItems();
     };
@@ -460,24 +815,24 @@
     window.setAisleFilter = function(aisleId) {
       activeAisleFilter = aisleId;
       renderAisleFilters();
-      renderAll();
+      window.renderAll();
     };
 
     window.shareShoppingList = async function() {
       const toBuy = items.filter(i => !i.bought);
       if (toBuy.length === 0) {
-        alert("Non c'è nulla da comprare in lista!");
+        alert("La lista della spesa è attualmente vuota.");
         return;
       }
 
-      const lines = CORSIE.map(c => {
-        const group = toBuy.filter(i => i.aisle === c.id);
+      const lines = REPARTI.map(r => {
+        const group = toBuy.filter(i => i.aisle === r.id);
         if (group.length === 0) return null;
         const rows = group.map(i => `  • ${i.name}${i.qty ? ` (${i.qty})` : ''}`).join('\n');
-        return `${c.label}\n${rows}`;
+        return `*${r.code}. ${r.label.toUpperCase()}*\n${rows}`;
       }).filter(Boolean);
 
-      const text = `🛒 *Lista della Spesa*\n\n${lines.join('\n\n')}`;
+      const text = `*LISTA DELLA SPESA — FAMIGLIA*\n\n${lines.join('\n\n')}`;
 
       if (navigator.share) {
         try {
@@ -489,25 +844,57 @@
       await navigator.clipboard.writeText(text);
       const btn = document.getElementById('share-btn');
       const old = btn.innerHTML;
-      btn.innerHTML = '✓ Copiata';
+      btn.innerHTML = '<span>✓ Lista Copiata!</span>';
       setTimeout(() => { btn.innerHTML = old; }, 2000);
     };
 
     // =========================================================================
-    // 5. RENDERING INTERFACCIA
+    // 6. RENDERING INTERFACCIA STILE GDO
     // =========================================================================
-    function renderQuickPills() {
-      const container = document.getElementById('quick-pills');
-      container.innerHTML = QUICK_ITEMS.map(q => `
-        <button
-          type="button"
-          onclick="quickAdd('${q.name}', '${q.aisle}')"
-          class="text-xs font-medium bg-stone-100 hover:bg-emerald-50 hover:text-[#14532D] hover:border-emerald-300 text-stone-700 border border-stone-200 px-2.5 py-1 rounded-full transition cursor-pointer"
-        >
-          ${q.icon} + ${q.name}
-        </button>
-      `).join('');
+    function getAisleMeta(aisleId) {
+      return REPARTI.find(r => r.id === aisleId) || REPARTI[3];
     }
+
+    window.renderQuickPills = function() {
+      const container = document.getElementById('quick-pills');
+      if (!container) return;
+
+      const query = (document.getElementById('quick-search-input')?.value || '').trim().toLowerCase();
+      const filteredQuick = query
+        ? QUICK_ITEMS.filter(q => q.name.toLowerCase().includes(query))
+        : QUICK_ITEMS;
+
+      if (filteredQuick.length === 0) {
+        container.innerHTML = `<p class="col-span-full text-xs text-slate-400 py-2">Nessuna voce frequente trovata.</p>`;
+        return;
+      }
+
+      container.innerHTML = filteredQuick.map(q => {
+        const isAlreadyInList = items.some(i => !i.bought && i.name.toLowerCase() === q.name.toLowerCase());
+        const meta = getAisleMeta(q.aisle);
+        return `
+          <button
+            type="button"
+            onclick="quickAdd('${escapeAttr(q.name)}', '${q.aisle}')"
+            class="p-2.5 rounded-lg border-2 text-left transition cursor-pointer flex items-center justify-between gap-2 ${
+              isAlreadyInList
+                ? 'bg-[#0050AA] text-white border-[#0050AA] shadow-xs'
+                : 'bg-slate-50/70 hover:bg-white hover:border-[#0050AA] text-slate-800 border-slate-200'
+            }"
+          >
+            <div class="min-w-0">
+              <p class="text-xs font-extrabold truncate">${escapeHtml(q.name)}</p>
+              <p class="text-[10px] font-semibold truncate ${isAlreadyInList ? 'text-sky-200' : 'text-slate-400'}">${meta.label}</p>
+            </div>
+            <span class="w-5 h-5 rounded-md flex items-center justify-center text-xs font-black shrink-0 ${
+              isAlreadyInList ? 'bg-[#FFF000] text-[#003878]' : 'bg-white border border-slate-200 text-[#0050AA]'
+            }">
+              ${isAlreadyInList ? '✓' : '+'}
+            </span>
+          </button>
+        `;
+      }).join('');
+    };
 
     function renderAisleFilters() {
       const bar = document.getElementById('aisle-filter-bar');
@@ -515,30 +902,43 @@
         <button
           type="button"
           onclick="setAisleFilter('all')"
-          class="shrink-0 text-xs font-semibold px-3 py-1.5 rounded-full transition cursor-pointer ${activeAisleFilter === 'all' ? 'bg-white text-[#14532D]' : 'bg-white/15 text-white hover:bg-white/25'}"
+          class="shrink-0 text-xs font-extrabold px-3.5 py-2 rounded-lg border-2 transition cursor-pointer ${activeAisleFilter === 'all' ? 'bg-[#0050AA] text-white border-[#0050AA]' : 'bg-slate-50 text-slate-600 border-slate-200 hover:border-[#0050AA]'}"
         >
-          Tutte le corsie
+          Tutti i reparti
         </button>
       `;
 
-      const otherBtns = CORSIE.map(c => `
+      const otherBtns = REPARTI.map(r => `
         <button
           type="button"
-          onclick="setAisleFilter('${c.id}')"
-          class="shrink-0 text-xs font-semibold px-3 py-1.5 rounded-full transition cursor-pointer ${activeAisleFilter === c.id ? 'bg-white text-[#14532D]' : 'bg-white/15 text-white hover:bg-white/25'}"
+          onclick="setAisleFilter('${r.id}')"
+          class="shrink-0 text-xs font-bold px-3.5 py-2 rounded-lg border-2 transition cursor-pointer ${activeAisleFilter === r.id ? 'bg-[#0050AA] text-white border-[#0050AA]' : 'bg-slate-50 text-slate-600 border-slate-200 hover:border-[#0050AA]'}"
         >
-          ${c.label}
+          ${r.code}. ${r.label}
         </button>
       `).join('');
 
       bar.innerHTML = allBtn + otherBtns;
     }
 
-    function renderAll() {
+    window.renderAll = function() {
       const toBuy = items.filter(i => !i.bought);
       const bought = items.filter(i => i.bought);
+      const total = items.length;
+      const pct = total === 0 ? 0 : Math.round((bought.length / total) * 100);
 
-      document.getElementById('todo-count').textContent = toBuy.length;
+      window.renderQuickPills();
+
+      // Cruscotto KPI e barra progresso
+      document.getElementById('kpi-todo').textContent = toBuy.length;
+      document.getElementById('kpi-bought').textContent = bought.length;
+      document.getElementById('kpi-progress').textContent = `${pct}%`;
+      document.getElementById('progress-label-detail').textContent = `${bought.length} di ${total} articoli`;
+      document.getElementById('progress-bar-fill').style.width = `${pct}%`;
+
+      // Contatori schede
+      document.getElementById('tab-todo-badge').textContent = toBuy.length;
+      document.getElementById('add-section-count').textContent = toBuy.length;
       document.getElementById('bought-count').textContent = bought.length;
       document.getElementById('bought-count-badge').textContent = bought.length;
 
@@ -549,7 +949,51 @@
         clearBtn.classList.add('hidden');
       }
 
-      // Rendering prodotti da comprare raggruppati per corsia
+      // 1. SEZIONE "AGGIUNGI ARTICOLI"
+      const searchQuery = (document.getElementById('manage-search-input')?.value || '').trim().toLowerCase();
+      const filteredManage = searchQuery
+        ? toBuy.filter(i => i.name.toLowerCase().includes(searchQuery))
+        : toBuy;
+
+      const manageContainer = document.getElementById('manage-list-container');
+      if (filteredManage.length === 0) {
+        manageContainer.innerHTML = `<li class="p-8 text-center text-slate-400 text-xs font-medium">${searchQuery ? 'Nessuna corrispondenza trovata.' : 'Nessun articolo attualmente in lista.'}</li>`;
+      } else {
+        manageContainer.innerHTML = filteredManage.map(item => {
+          const meta = getAisleMeta(item.aisle);
+          return `
+            <li class="px-5 py-3.5 flex items-center justify-between gap-3 hover:bg-slate-50 transition">
+              <div>
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="text-sm font-extrabold text-slate-900">${escapeHtml(item.name)}</span>
+                  ${item.qty ? `<span class="text-xs font-extrabold text-[#0050AA] bg-blue-50 border border-blue-200 px-2 py-0.5 rounded">${escapeHtml(item.qty)}</span>` : ''}
+                </div>
+                <span class="inline-block mt-1 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded ${meta.badge}">
+                  ${meta.code}. ${meta.label}
+                </span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onclick="openEditModal('${item.id}')"
+                  class="text-xs font-bold text-slate-600 hover:text-[#0050AA] hover:bg-blue-50 border border-slate-200 px-2.5 py-1.5 rounded-lg transition cursor-pointer"
+                >
+                  Modifica
+                </button>
+                <button
+                  type="button"
+                  onclick="deleteItem('${item.id}')"
+                  class="text-xs font-bold text-slate-400 hover:text-[#E60A14] hover:bg-red-50 px-2.5 py-1.5 rounded-lg transition cursor-pointer"
+                >
+                  Rimuovi
+                </button>
+              </div>
+            </li>
+          `;
+        }).join('');
+      }
+
+      // 2. SEZIONE "CARRELLO & SPESA"
       const container = document.getElementById('shopping-list-container');
       const filteredToBuy = activeAisleFilter === 'all'
         ? toBuy
@@ -557,44 +1001,42 @@
 
       if (filteredToBuy.length === 0) {
         container.innerHTML = `
-          <div class="bg-white rounded-2xl border border-stone-200/80 p-10 text-center">
-            <p class="text-2xl mb-2">🎉</p>
-            <p class="text-sm font-semibold text-stone-700">Tutto preso!</p>
-            <p class="text-xs text-stone-400 mt-1">Non ci sono articoli da comprare${activeAisleFilter !== 'all' ? ' in questa corsia' : ''}.</p>
+          <div class="bg-white rounded-xl border border-slate-200 p-12 text-center">
+            <p class="text-lg font-extrabold text-slate-800">Tutto completato!</p>
+            <p class="text-xs text-slate-400 mt-1">Non ci sono articoli da comprare${activeAisleFilter !== 'all' ? ' in questo reparto' : ''}.</p>
           </div>
         `;
       } else {
-        container.innerHTML = CORSIE.map(corsia => {
-          const group = filteredToBuy.filter(i => i.aisle === corsia.id);
+        container.innerHTML = REPARTI.map(reparto => {
+          const group = filteredToBuy.filter(i => i.aisle === reparto.id);
           if (group.length === 0) return '';
 
           return `
-            <div class="bg-white rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.03)] border border-stone-200/80 overflow-hidden">
-              <div class="px-4 py-2.5 border-b border-stone-100 flex items-center justify-between ${corsia.color}">
-                <span class="text-xs font-bold tracking-wide">${corsia.label}</span>
-                <span class="text-[11px] font-bold opacity-75">${group.length}</span>
+            <div class="bg-white rounded-xl shadow-2xs border border-slate-200 overflow-hidden ${reparto.border}">
+              <div class="px-5 py-3 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
+                <span class="text-xs font-black uppercase tracking-wider text-slate-800">${reparto.code}. ${reparto.label}</span>
+                <span class="text-[11px] font-extrabold bg-white border border-slate-200 text-slate-700 px-2.5 py-0.5 rounded-full">${group.length}</span>
               </div>
-              <ul class="divide-y divide-stone-100">
+              <ul class="divide-y divide-slate-100">
                 ${group.map(item => `
-                  <li class="px-4 py-3 flex items-center justify-between gap-3 hover:bg-stone-50 transition">
+                  <li class="px-5 py-3.5 flex items-center justify-between gap-3 hover:bg-blue-50/30 transition">
                     <button
                       type="button"
                       onclick="toggleItem('${item.id}')"
                       class="flex items-center gap-3.5 flex-1 text-left cursor-pointer"
                     >
-                      <span class="w-5 h-5 rounded-md border-2 border-stone-300 flex items-center justify-center shrink-0"></span>
+                      <span class="w-5 h-5 rounded border-2 border-slate-300 bg-white flex items-center justify-center shrink-0"></span>
                       <div>
-                        <span class="text-sm font-semibold text-stone-900">${escapeHtml(item.name)}</span>
-                        ${item.qty ? `<span class="ml-2 text-xs font-medium text-[#14532D] bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md">${escapeHtml(item.qty)}</span>` : ''}
+                        <span class="text-sm font-extrabold text-slate-900">${escapeHtml(item.name)}</span>
+                        ${item.qty ? `<span class="ml-2 text-xs font-extrabold text-[#0050AA] bg-blue-50 border border-blue-200 px-2 py-0.5 rounded">${escapeHtml(item.qty)}</span>` : ''}
                       </div>
                     </button>
                     <button
                       type="button"
-                      onclick="deleteItem('${item.id}')"
-                      title="Elimina"
-                      class="text-stone-300 hover:text-red-600 px-2 py-1 text-sm cursor-pointer"
+                      onclick="toggleItem('${item.id}')"
+                      class="text-xs font-extrabold text-white bg-[#0050AA] hover:bg-[#003878] px-3.5 py-2 rounded-lg shadow-2xs transition cursor-pointer shrink-0"
                     >
-                      ✕
+                      Nel carrello
                     </button>
                   </li>
                 `).join('')}
@@ -604,7 +1046,7 @@
         }).join('');
       }
 
-      // Rendering prodotti già nel carrello
+      // 3. ARTICOLI GIÀ NEL CARRELLO
       const boughtSection = document.getElementById('bought-section');
       const boughtContainer = document.getElementById('bought-list-container');
       if (bought.length === 0) {
@@ -612,26 +1054,27 @@
       } else {
         boughtSection.classList.remove('hidden');
         boughtContainer.innerHTML = bought.map(item => `
-          <div class="px-4 py-2.5 flex items-center justify-between gap-3">
+          <div class="px-5 py-3 flex items-center justify-between gap-3 bg-slate-50/80">
             <button
               type="button"
               onclick="toggleItem('${item.id}')"
               class="flex items-center gap-3.5 flex-1 text-left cursor-pointer"
             >
-              <span class="w-5 h-5 rounded-md bg-[#14532D] text-white text-xs font-bold flex items-center justify-center shrink-0">✓</span>
-              <span class="text-sm text-stone-400 line-through">${escapeHtml(item.name)}${item.qty ? ` (${escapeHtml(item.qty)})` : ''}</span>
+              <span class="w-5 h-5 rounded bg-emerald-600 text-white text-xs font-black flex items-center justify-center shrink-0">✓</span>
+              <span class="text-sm font-medium text-slate-400 line-through">${escapeHtml(item.name)}${item.qty ? ` (${escapeHtml(item.qty)})` : ''}</span>
             </button>
             <button
               type="button"
               onclick="deleteItem('${item.id}')"
-              class="text-stone-300 hover:text-red-600 px-2 py-1 text-xs cursor-pointer"
+              title="Elimina voce"
+              class="text-xs font-bold text-slate-400 hover:text-[#E60A14] px-2 py-1 cursor-pointer"
             >
-              ✕
+              Elimina
             </button>
           </div>
         `).join('');
       }
-    }
+    };
 
     function escapeHtml(str) {
       return String(str)
@@ -639,6 +1082,10 @@
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;");
+    }
+
+    function escapeAttr(str) {
+      return String(str).replace(/"/g, "&quot;").replace(/'/g, "\\'");
     }
 
     // Avvio
