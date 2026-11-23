@@ -50,65 +50,6 @@
 </head>
 <body class="min-h-screen flex flex-col selection:bg-[#0050AA] selection:text-white">
 
-  <!-- SCHERMATA 0: ACCESSO RISERVATO FAMIGLIA -->
-  <div id="gate-screen" class="min-h-screen flex items-center justify-center p-4 sm:p-8 bg-[#F4F6F9]">
-    <div class="bg-white max-w-md w-full rounded-xl shadow-[0_12px_40px_rgba(0,80,170,0.12)] border border-slate-200 overflow-hidden">
-      <div class="bg-[#0050AA] px-7 py-9 text-center text-white relative">
-        <!-- Marchio stile GDO -->
-        <div class="inline-flex items-center justify-center w-14 h-14 rounded-lg bg-[#0050AA] border-2 border-[#FFF000] shadow-md mb-4 relative">
-          <span class="w-10 h-10 rounded-full bg-[#FFF000] flex items-center justify-center text-[#0050AA] font-black text-lg tracking-tighter border-2 border-[#E60A14]">
-            SP
-          </span>
-        </div>
-        <p class="text-[11px] font-bold uppercase tracking-[0.2em] text-[#FFF000] mb-1">
-          Portale Spesa & Dispensa
-        </p>
-        <h1 class="text-2xl sm:text-3xl font-black tracking-tight text-white">
-          Lista della Spesa
-        </h1>
-      </div>
-
-      <div class="h-1.5 w-full flex">
-        <div class="flex-1 bg-[#FFF000]"></div>
-        <div class="flex-1 bg-[#E60A14]"></div>
-        <div class="flex-1 bg-[#003878]"></div>
-      </div>
-
-      <form id="family-code-form" class="p-7 sm:p-8 space-y-5">
-        <div class="text-center">
-          <h2 class="text-lg font-extrabold text-slate-900">Accesso Registro Familiare</h2>
-          <p class="text-xs text-slate-500 mt-1 leading-relaxed">
-            Inserisci il codice d'accesso condiviso per sincronizzare la lista della spesa su questo dispositivo.
-          </p>
-        </div>
-
-        <div>
-          <input
-            type="password"
-            id="family-code-input"
-            inputmode="numeric"
-            pattern="[0-9]*"
-            maxlength="8"
-            placeholder="••••••••"
-            required
-            autocomplete="off"
-            class="w-full px-4 py-3.5 text-center text-lg tracking-[0.35em] font-extrabold rounded-lg border-2 border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:border-[#0050AA] transition"
-          />
-          <p id="family-code-error" class="hidden text-xs text-[#E60A14] font-bold text-center mt-2">
-            Codice non valido. Verifica e riprova.
-          </p>
-        </div>
-
-        <button
-          type="submit"
-          class="w-full bg-[#0050AA] hover:bg-[#003878] text-white text-xs uppercase tracking-wider font-extrabold py-4 rounded-lg shadow-sm transition cursor-pointer"
-        >
-          Entra nella Lista Spesa →
-        </button>
-      </form>
-    </div>
-  </div>
-
   <!-- MODALE MODIFICA ARTICOLO -->
   <div id="edit-modal" class="hidden fixed inset-0 z-40 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
     <div class="bg-white max-w-md w-full rounded-xl shadow-2xl border border-slate-200 overflow-hidden">
@@ -152,8 +93,8 @@
     </div>
   </div>
 
-  <!-- SCHERMATA 1: APPLICAZIONE PRINCIPALE STILE RETAIL / GDO -->
-  <div id="app-screen" class="hidden min-h-screen flex flex-col">
+  <!-- APPLICAZIONE PRINCIPALE -->
+  <div id="app-screen" class="min-h-screen flex flex-col">
 
     <!-- BARRA SUPERIORE DI SERVIZIO -->
     <div class="bg-[#003878] text-white text-[11px] font-semibold">
@@ -166,15 +107,17 @@
       </div>
     </div>
 
-    <!-- HEADER PRINCIPALE BLU CON ACCENTI GIALLO/ROSSO -->
+    <!-- HEADER PRINCIPALE BLU CON LOGO STILE LIDL -->
     <header class="bg-[#0050AA] text-white shadow-md sticky top-0 z-30">
       <div class="max-w-5xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between gap-3">
         <div class="flex items-center gap-3.5">
-          <!-- Logo stile Lidl -->
-          <div class="w-11 h-11 rounded-lg bg-[#0050AA] border-2 border-[#FFF000] flex items-center justify-center shrink-0 shadow-xs">
-            <span class="w-8 h-8 rounded-full bg-[#FFF000] flex items-center justify-center text-[#0050AA] font-black text-xs tracking-tighter border-2 border-[#E60A14]">
-              SP
-            </span>
+          <!-- Marchio quadrato stile Lidl -->
+          <div class="w-12 h-12 rounded-lg bg-[#0050AA] border-2 border-[#FFF000] flex items-center justify-center shrink-0 shadow-sm">
+            <div class="w-9 h-9 rounded-full bg-[#FFF000] border-2 border-[#E60A14] flex items-center justify-center">
+              <span class="text-[#0050AA] font-black text-[9px] tracking-tighter leading-none">
+                SP<span class="inline-block -rotate-12 text-[#E60A14]">E</span>SA
+              </span>
+            </div>
           </div>
           <div>
             <h1 class="text-xl sm:text-2xl font-black tracking-tight text-white leading-none">
@@ -463,13 +406,13 @@
     </footer>
   </div>
 
-  <!-- SCRIPT PWA + AUTO-AGGIORNAMENTO + FIREBASE REALTIME -->
+  <!-- SCRIPT PWA (ICONA PNG STILE LIDL PER IPHONE/ANDROID) + FIREBASE REALTIME -->
   <script type="module">
     // =========================================================================
-    // 0. VERSIONE APP E CODICE D'ACCESSO FAMIGLIA
+    // 0. VERSIONE APP E ID ARCHIVIO FAMIGLIA
     // =========================================================================
-    const APP_VERSION = "4.0.0";
-    const CODICE_ACCESSO = "25122026";
+    const APP_VERSION = "6.0.0";
+    const SHARED_DOC_ID = "spesa_25122026";
 
     (function checkAppVersion() {
       const savedVersion = localStorage.getItem('spesa_app_version');
@@ -482,42 +425,90 @@
     })();
 
     // =========================================================================
-    // 1. ICONA STILE RETAIL + MANIFEST DINAMICO PWA
+    // 1. GENERATORE ICONA PNG ALTA RISOLUZIONE (512x512) STILE LIDL PER HOME
     // =========================================================================
-    (function setupPWAManifest() {
-      const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="96" fill="#0050AA"/><circle cx="256" cy="256" r="185" fill="#FFF000" stroke="#E60A14" stroke-width="22"/><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-family="Arial, sans-serif" font-weight="900" font-size="165" fill="#0050AA">SP</text></svg>`;
-      const iconUrl = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svgIcon)));
+    (function setupLidlStyleHomeIcon() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 512;
+      canvas.height = 512;
+      const ctx = canvas.getContext('2d');
 
-      const linkFav = document.createElement("link");
-      linkFav.rel = "icon";
-      linkFav.href = iconUrl;
+      // 1. Sfondo quadrato blu istituzionale (#0050AA)
+      ctx.fillStyle = '#0050AA';
+      ctx.fillRect(0, 0, 512, 512);
+
+      // 2. Cornice gialla interna (#FFF000) tipica dell'insegna
+      ctx.strokeStyle = '#FFF000';
+      ctx.lineWidth = 22;
+      ctx.strokeRect(22, 22, 468, 468);
+
+      // 3. Cerchio giallo centrale (#FFF000)
+      ctx.beginPath();
+      ctx.arc(256, 256, 182, 0, Math.PI * 2);
+      ctx.fillStyle = '#FFF000';
+      ctx.fill();
+
+      // 4. Anello rosso (#E60A14) attorno al cerchio giallo
+      ctx.lineWidth = 18;
+      ctx.strokeStyle = '#E60A14';
+      ctx.stroke();
+
+      // 5. Scritta centrale "SPESA" stile logo Lidl (con la 'E' inclinata in rosso)
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.font = '900 84px Arial, Helvetica, sans-serif';
+
+      // "SP" in blu
+      ctx.fillStyle = '#0050AA';
+      ctx.fillText('SP', 172, 262);
+
+      // "E" inclinata in rosso al centro
+      ctx.save();
+      ctx.translate(256, 260);
+      ctx.rotate(-14 * Math.PI / 180);
+      ctx.fillStyle = '#E60A14';
+      ctx.fillText('E', 0, 0);
+      ctx.restore();
+
+      // "SA" in blu
+      ctx.fillStyle = '#0050AA';
+      ctx.fillText('SA', 340, 262);
+
+      // Esporta in PNG reale (richiesto da iOS Safari e Android Chrome per l'icona Home)
+      const pngDataUrl = canvas.toDataURL('image/png');
+
+      const linkFav = document.createElement('link');
+      linkFav.rel = 'icon';
+      linkFav.type = 'image/png';
+      linkFav.href = pngDataUrl;
       document.head.appendChild(linkFav);
 
-      const linkApple = document.createElement("link");
-      linkApple.rel = "apple-touch-icon";
-      linkApple.href = iconUrl;
+      const linkApple = document.createElement('link');
+      linkApple.rel = 'apple-touch-icon';
+      linkApple.sizes = '512x512';
+      linkApple.href = pngDataUrl;
       document.head.appendChild(linkApple);
 
       const manifest = {
-        name: "Lista della Spesa — Famiglia",
-        short_name: "Lista Spesa",
-        start_url: ".",
-        display: "standalone",
-        background_color: "#F4F6F9",
-        theme_color: "#0050AA",
+        name: 'Lista della Spesa',
+        short_name: 'Lista Spesa',
+        start_url: '.',
+        display: 'standalone',
+        background_color: '#0050AA',
+        theme_color: '#0050AA',
         icons: [
           {
-            src: iconUrl,
-            sizes: "512x512",
-            type: "image/svg+xml",
-            purpose: "any maskable"
+            src: pngDataUrl,
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'any maskable'
           }
         ]
       };
 
-      const manifestBlob = new Blob([JSON.stringify(manifest)], { type: "application/manifest+json" });
-      const manifestLink = document.createElement("link");
-      manifestLink.rel = "manifest";
+      const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
+      const manifestLink = document.createElement('link');
+      manifestLink.rel = 'manifest';
       manifestLink.href = URL.createObjectURL(manifestBlob);
       document.head.appendChild(manifestLink);
     })();
@@ -577,7 +568,7 @@
     ];
 
     // =========================================================================
-    // 3. FIREBASE REALTIME
+    // 3. FIREBASE REALTIME (COLLEGAMENTO IMMEDIATO)
     // =========================================================================
     const firebaseConfig = {
       apiKey: "AIzaSyCqLyRhVU3Rk_9Z4d-VqHMfOgCmD08QyE0",
@@ -588,33 +579,13 @@
       appId: "1:239854924008:web:3fdd01d2710a6ef40a595d"
     };
 
-    let isGateUnlocked = localStorage.getItem('spesa_gate_unlocked') === CODICE_ACCESSO;
     let items = [];
     let activeAisleFilter = "all";
     let useFirebase = false;
     let db = null;
     let firestoreFns = null;
 
-    document.getElementById('family-code-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const input = document.getElementById('family-code-input');
-      const errorMsg = document.getElementById('family-code-error');
-      if (input.value.trim() === CODICE_ACCESSO) {
-        localStorage.setItem('spesa_gate_unlocked', CODICE_ACCESSO);
-        isGateUnlocked = true;
-        errorMsg.classList.add('hidden');
-        showApp();
-        await initStorage();
-      } else {
-        errorMsg.classList.remove('hidden');
-        input.value = '';
-        input.focus();
-      }
-    });
-
     async function initStorage() {
-      const docId = "spesa_" + CODICE_ACCESSO;
-
       const cached = localStorage.getItem('spesa_items_cache');
       if (cached) {
         items = JSON.parse(cached);
@@ -627,10 +598,10 @@
 
         const app = initializeApp(firebaseConfig);
         db = getFirestore(app);
-        firestoreFns = { doc, onSnapshot, setDoc, docId };
+        firestoreFns = { doc, onSnapshot, setDoc, docId: SHARED_DOC_ID };
         useFirebase = true;
 
-        onSnapshot(doc(db, "spesa", docId), { includeMetadataChanges: true }, (docSnap) => {
+        onSnapshot(doc(db, "spesa", SHARED_DOC_ID), { includeMetadataChanges: true }, (docSnap) => {
           if (docSnap.exists()) {
             items = docSnap.data().items || [];
           } else {
@@ -671,14 +642,6 @@
       url.searchParams.set('v', Date.now().toString());
       window.location.replace(url.toString());
     };
-
-    function showApp() {
-      document.getElementById('gate-screen').classList.add('hidden');
-      document.getElementById('app-screen').classList.remove('hidden');
-      window.renderQuickPills();
-      renderAisleFilters();
-      window.renderAll();
-    }
 
     // =========================================================================
     // 4. NAVIGAZIONE TRA LE DUE SEZIONI
@@ -1088,11 +1051,11 @@
       return String(str).replace(/"/g, "&quot;").replace(/'/g, "\\'");
     }
 
-    // Avvio
-    if (isGateUnlocked) {
-      showApp();
-      await initStorage();
-    }
+    // Avvio diretto immediato
+    window.renderQuickPills();
+    renderAisleFilters();
+    window.renderAll();
+    await initStorage();
   </script>
 </body>
 </html>
