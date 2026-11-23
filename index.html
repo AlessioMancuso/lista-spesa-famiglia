@@ -310,6 +310,11 @@
             />
           </div>
 
+          <!-- Filtro rapido per reparto nelle voci frequenti -->
+          <div class="flex gap-1.5 overflow-x-auto no-scrollbar pb-1" id="quick-aisle-filter-bar">
+            <!-- Popolato via JS -->
+          </div>
+
           <div id="quick-pills" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
             <!-- Popolato con le card frequenti -->
           </div>
@@ -411,7 +416,7 @@
     // =========================================================================
     // 0. VERSIONE APP E ID ARCHIVIO FAMIGLIA
     // =========================================================================
-    const APP_VERSION = "6.1.0";
+    const APP_VERSION = "7.0.0";
     const SHARED_DOC_ID = "spesa_casa";
 
     (function checkAppVersion() {
@@ -514,7 +519,7 @@
     })();
 
     // =========================================================================
-    // 2. REPARTI ORDINATI E VOCI FREQUENTI DELLA FAMIGLIA
+    // 2. REPARTI ORDINATI E CATALOGO COMPLETO VOCI FREQUENTI DELLA FAMIGLIA
     // =========================================================================
     const REPARTI = [
       { id: "ortofrutta", code: "01", label: "Ortofrutta", badge: "bg-emerald-100 text-emerald-800", border: "border-t-4 border-t-emerald-600" },
@@ -530,22 +535,39 @@
       // 01. Ortofrutta
       { name: "Insalata", aisle: "ortofrutta" },
       { name: "Banane", aisle: "ortofrutta" },
+      { name: "Mele", aisle: "ortofrutta" },
       { name: "Peperoni", aisle: "ortofrutta" },
+      { name: "Zucchine", aisle: "ortofrutta" },
+      { name: "Finocchi", aisle: "ortofrutta" },
+      { name: "Patate", aisle: "ortofrutta" },
+
       // 02. Latticini e Freschi
       { name: "Latte", aisle: "freschi" },
       { name: "Uova", aisle: "freschi" },
       { name: "Affettato", aisle: "freschi" },
+      { name: "Pancetta", aisle: "freschi" },
       { name: "Sottilette", aisle: "freschi" },
       { name: "Grana", aisle: "freschi" },
       { name: "Formaggi", aisle: "freschi" },
+      { name: "Pasta sfoglia", aisle: "freschi" },
+
+      // 03. Macelleria e Pescheria
+      { name: "Carne", aisle: "carne_pesce" },
+      { name: "Carne trita", aisle: "carne_pesce" },
+
       // 04. Dispensa e Forno
       { name: "Caffè", aisle: "dispensa" },
       { name: "Pasta", aisle: "dispensa" },
+      { name: "Spaghetti", aisle: "dispensa" },
+      { name: "Riso", aisle: "dispensa" },
+      { name: "Lasagne", aisle: "dispensa" },
       { name: "Piadine", aisle: "dispensa" },
       { name: "Crackers", aisle: "dispensa" },
       { name: "Insalatissime", aisle: "dispensa" },
+      { name: "Legumi", aisle: "dispensa" },
       { name: "Salsa Mutti", aisle: "dispensa" },
       { name: "Salsa ciliegino", aisle: "dispensa" },
+      { name: "Pesto", aisle: "dispensa" },
       { name: "Ketchup", aisle: "dispensa" },
       { name: "Zucchero", aisle: "dispensa" },
       { name: "Merende", aisle: "dispensa" },
@@ -553,18 +575,38 @@
       { name: "Biscotti", aisle: "dispensa" },
       { name: "Olio", aisle: "dispensa" },
       { name: "Aceto", aisle: "dispensa" },
-      { name: "Sale", aisle: "dispensa" },
+      { name: "Sale grosso", aisle: "dispensa" },
+      { name: "Sale fino", aisle: "dispensa" },
+
       // 05. Acqua e Bevande
       { name: "Acqua", aisle: "bevande" },
+      { name: "Vino", aisle: "bevande" },
+
       // 06. Surgelati
       { name: "Surgelati", aisle: "surgelati" },
       { name: "Pesce surgelato", aisle: "surgelati" },
+      { name: "Spinaci", aisle: "surgelati" },
+      { name: "Fagiolini", aisle: "surgelati" },
       { name: "Pizze", aisle: "surgelati" },
       { name: "Gelati", aisle: "surgelati" },
+
       // 07. Casa e Cura Persona
       { name: "Tovaglioli", aisle: "casa" },
       { name: "Fazzoletti", aisle: "casa" },
-      { name: "Carta igienica", aisle: "casa" }
+      { name: "Carta igienica", aisle: "casa" },
+      { name: "Dentifricio", aisle: "casa" },
+      { name: "Bagnoschiuma", aisle: "casa" },
+      { name: "Shampoo", aisle: "casa" },
+      { name: "Collutorio", aisle: "casa" },
+      { name: "Cottonfioc", aisle: "casa" },
+      { name: "Borotalco", aisle: "casa" },
+      { name: "Det. Lavatrice", aisle: "casa" },
+      { name: "Ammorbidente", aisle: "casa" },
+      { name: "Pastiglie Lavastoviglie", aisle: "casa" },
+      { name: "Brillantante", aisle: "casa" },
+      { name: "Sale lavastoviglie", aisle: "casa" },
+      { name: "Det. Cucina", aisle: "casa" },
+      { name: "Det. Bagno", aisle: "casa" }
     ];
 
     // =========================================================================
@@ -581,6 +623,7 @@
 
     let items = [];
     let activeAisleFilter = "all";
+    let quickAisleFilter = "all";
     let useFirebase = false;
     let db = null;
     let firestoreFns = null;
@@ -781,6 +824,12 @@
       window.renderAll();
     };
 
+    window.setQuickAisleFilter = function(aisleId) {
+      quickAisleFilter = aisleId;
+      renderQuickAisleFilters();
+      window.renderQuickPills();
+    };
+
     window.shareShoppingList = async function() {
       const toBuy = items.filter(i => !i.bought);
       if (toBuy.length === 0) {
@@ -818,14 +867,46 @@
       return REPARTI.find(r => r.id === aisleId) || REPARTI[3];
     }
 
+    function renderQuickAisleFilters() {
+      const bar = document.getElementById('quick-aisle-filter-bar');
+      if (!bar) return;
+
+      const allBtn = `
+        <button
+          type="button"
+          onclick="setQuickAisleFilter('all')"
+          class="shrink-0 text-[11px] font-extrabold px-2.5 py-1 rounded-md border transition cursor-pointer ${quickAisleFilter === 'all' ? 'bg-[#0050AA] text-white border-[#0050AA]' : 'bg-slate-50 text-slate-600 border-slate-200 hover:border-[#0050AA]'}"
+        >
+          Tutte (${QUICK_ITEMS.length})
+        </button>
+      `;
+
+      const otherBtns = REPARTI.map(r => {
+        const count = QUICK_ITEMS.filter(q => q.aisle === r.id).length;
+        return `
+          <button
+            type="button"
+            onclick="setQuickAisleFilter('${r.id}')"
+            class="shrink-0 text-[11px] font-bold px-2.5 py-1 rounded-md border transition cursor-pointer ${quickAisleFilter === r.id ? 'bg-[#0050AA] text-white border-[#0050AA]' : 'bg-slate-50 text-slate-600 border-slate-200 hover:border-[#0050AA]'}"
+          >
+            ${r.label} (${count})
+          </button>
+        `;
+      }).join('');
+
+      bar.innerHTML = allBtn + otherBtns;
+    }
+
     window.renderQuickPills = function() {
       const container = document.getElementById('quick-pills');
       if (!container) return;
 
       const query = (document.getElementById('quick-search-input')?.value || '').trim().toLowerCase();
-      const filteredQuick = query
-        ? QUICK_ITEMS.filter(q => q.name.toLowerCase().includes(query))
-        : QUICK_ITEMS;
+      const filteredQuick = QUICK_ITEMS.filter(q => {
+        const matchesAisle = quickAisleFilter === 'all' || q.aisle === quickAisleFilter;
+        const matchesText = !query || q.name.toLowerCase().includes(query);
+        return matchesAisle && matchesText;
+      });
 
       if (filteredQuick.length === 0) {
         container.innerHTML = `<p class="col-span-full text-xs text-slate-400 py-2">Nessuna voce frequente trovata.</p>`;
@@ -1052,6 +1133,7 @@
     }
 
     // Avvio diretto immediato
+    renderQuickAisleFilters();
     window.renderQuickPills();
     renderAisleFilters();
     window.renderAll();
